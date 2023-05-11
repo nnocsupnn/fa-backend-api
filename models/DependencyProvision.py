@@ -8,11 +8,7 @@ class DependencyProvision(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("user.id"), index=True)
-    type = Column(String(50), index=True)
     amount = Column(Float, index=True)
-    target_years = Column(Integer, index=True)
-    target_entry_age = Column(Integer, index=True)
-    age_before_entry = Column(Integer, index=True)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     

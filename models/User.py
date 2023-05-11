@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Enum, Date, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, joinedload
 from components.db import Base, SessionLocal, engine
 from models.Occupation import Occupation
 
@@ -7,15 +7,15 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True, index=True)
-    first_name = Column(String(35), index=True)
+    first_name = Column(String(35), index=True, nullable=False)
     last_name = Column(String(35), index=True)
     middle_name = Column(String(35), index=True)
-    email_address = Column(String(50), unique=True, index=True)
-    active = Column(Integer, index=True)
+    email_address = Column(String(50), unique=True, index=True, nullable=False)
+    active = Column(Integer, index=True, default=0)
     date_of_birth = Column(Date(), index=True)
-    marital = Column(Enum("single", "married", "divorced", "separated", "widowed"), index=True)
-    occupation_id = Column(Integer, ForeignKey('occupation.id'), index=True)
-    user_level = Column(Enum("admin", "user"), index=True)
+    marital = Column(Enum("single", "married", "divorced", "separated", "widowed"), index=True, nullable=False)
+    occupation_id = Column(Integer, ForeignKey('occupation.id'), index=True, nullable=True)
+    user_level = Column(Enum("admin", "user"), index=True, default="user")
     
     # Relationships
     occupation = relationship("Occupation", back_populates="users", lazy="select")
@@ -27,7 +27,7 @@ class User(Base):
     @staticmethod
     def get_user(user_id: int):
         db = SessionLocal()
-        user = db.query(User).filter(User.id == user_id).first()
+        user = db.query(User).options(joinedload(User.user_details)).options(joinedload(User.occupation)).options(joinedload(User.dependencies)).filter(User.id == user_id).first()
         db.close()
         return user
     
