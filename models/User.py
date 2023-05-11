@@ -15,9 +15,14 @@ class User(Base):
     date_of_birth = Column(Date(), index=True)
     marital = Column(Enum("single", "married", "divorced", "separated", "widowed"), index=True)
     occupation_id = Column(Integer, ForeignKey('occupation.id'), index=True)
-    occupation = relationship("Occupation", back_populates="users")
-
-    user_details = relationship("UserDetails", back_populates=__tablename__, cascade="all, delete-orphan")
+    user_level = Column(Enum("admin", "user"), index=True)
+    
+    # Relationships
+    occupation = relationship("Occupation", back_populates="users", lazy="select")
+    user_details = relationship("UserDetails", back_populates=__tablename__, cascade="all", lazy="select")
+    dependencies = relationship("Dependencies", back_populates=__tablename__, cascade="all", lazy="select")
+    dependency_provision = relationship("DependencyProvision", back_populates=__tablename__, cascade="all", lazy="select")
+    income_protection = relationship("IncomeProtection", back_populates=__tablename__, cascade="all", lazy="select")
 
     @staticmethod
     def get_user(user_id: int):
@@ -34,7 +39,7 @@ class User(Base):
         return details
     
     @staticmethod
-    def updateUser(user_id: int, update: Occupation):
+    def updateOccupation(user_id: int, update: Occupation):
         db = SessionLocal()
         user = db.query(User).filter(User.id == user_id).first()
         user.occupation_id = update['occupation_id']

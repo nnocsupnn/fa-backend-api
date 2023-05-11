@@ -13,3 +13,8 @@ class UserDetails(Base):
     retirement_age = Column(Integer, index=True)
     retirement_package = Column(Float(asdecimal=True), unique=True, index=True)
     life_expectancy = Column(Integer, index=True)
+    
+    income = relationship("Income", back_populates="user_details", lazy="select")
+    expenses = relationship("Expenses", back_populates="user_details", lazy="select")
+    
+    
