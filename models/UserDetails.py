@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, joinedload
 
 from components.db import Base, SessionLocal, engine
 
@@ -17,4 +17,8 @@ class UserDetails(Base):
     income = relationship("Income", back_populates="user_details", lazy="select")
     expenses = relationship("Expenses", back_populates="user_details", lazy="select")
     
-    
+    def getUserDetail(id: int):
+        db = SessionLocal()
+        result = db.query(UserDetails).options(joinedload(UserDetails.income)).options(joinedload(UserDetails.expenses)).filter(UserDetails.user_id == id).first()
+        db.close()
+        return result
