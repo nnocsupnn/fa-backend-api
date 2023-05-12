@@ -3,11 +3,11 @@ from sqlalchemy.orm import relationship
 
 from components.db import Base, SessionLocal, engine
 
-class Income(Base):
-    __tablename__ = "income"
+class Incomes(Base):
+    __tablename__ = "incomes"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_detail_id = Column(Integer, ForeignKey("user_details.id"), index=True)
+    user_detail_id = Column(Integer, ForeignKey("user_detail.id"), index=True)
     income_amount = Column(Float, index=True)
     income_type = Column(String(30), index=True)
     description = Column(String(50), index=True)
@@ -17,4 +17,4 @@ class Income(Base):
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     
-    user_details = relationship("UserDetails", back_populates=__tablename__, cascade="all", lazy="select")
+    user_detail = relationship("UserDetail", back_populates=__tablename__, cascade="all", lazy="select")

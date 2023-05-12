@@ -3,22 +3,22 @@ from sqlalchemy.orm import relationship, joinedload
 
 from components.db import Base, SessionLocal, engine
 
-class UserDetails(Base):
-    __tablename__ = "user_details"
+class UserDetail(Base):
+    __tablename__ = "user_detail"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship("User", back_populates=__tablename__)
     year_business = Column(Integer, index=True)
     retirement_age = Column(Integer, index=True)
     retirement_package = Column(Float(asdecimal=True), unique=True, index=True)
     life_expectancy = Column(Integer, index=True)
     
-    income = relationship("Income", back_populates="user_details", lazy="select")
-    expenses = relationship("Expenses", back_populates="user_details", lazy="select")
+    user = relationship("User", back_populates=__tablename__, lazy="joined")
+    incomes = relationship("Incomes", back_populates=__tablename__, lazy="joined")
+    expenses = relationship("Expenses", back_populates=__tablename__, lazy="joined")
     
     def getUserDetail(id: int):
         db = SessionLocal()
-        result = db.query(UserDetails).options(joinedload(UserDetails.income)).options(joinedload(UserDetails.expenses)).filter(UserDetails.user_id == id).first()
+        result = db.query(UserDetail).options(joinedload(UserDetail.income)).options(joinedload(UserDetail.expenses)).filter(UserDetail.user_id == id).first()
         db.close()
         return result

@@ -9,7 +9,7 @@ class Dependencies(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("user.id"), index=True)
     name = Column(String(50), index=True)
-    gender = Column(Enum("female", "male", "rather not say"), index=True)
+    gender = Column(Enum("female", "male"), index=True)
     relationship = Column(Enum("son", "daughter", "mother", "father", "grand_mother", "grand_father", "sister", "brother"), index=True)
     date_of_birth = Column(Date(), index=True)
     created_date = Column(DateTime, default=func.now())

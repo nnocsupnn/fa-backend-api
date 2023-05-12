@@ -27,5 +27,5 @@ pip install -r dependency.txt
 ```
 
 ```bash
-python -m uvicorn main:app --reload
+python main.py
 ```

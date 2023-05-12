@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 class RouteInterface(ABC):
     router = None
     session = None
+    service = None
     
     @abstractmethod
     def setup_routes(self):

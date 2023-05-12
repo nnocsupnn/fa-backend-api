@@ -1,10 +1,14 @@
+import json
 from fastapi import APIRouter, Response, status
 from fastapi.exceptions import FastAPIError
+from fastapi.responses import JSONResponse
 from models import User
-from json import loads as jsonResponse
 from sqlalchemy.orm import joinedload
-from interfaces.RouteInterface import RouteInterface
-from interfaces.json.user import User as UserJson, Occupation
+from interfaces.route_interface import RouteInterface
+from interfaces.json.api_dtos import User as UserJson, Occupation
+from services import UserService
+from decorator.json_encoder import CustomJSONEncoder
+from components.functions import serialize_model
 
 '''
 UserAPI is class for User Resource
@@ -19,47 +23,57 @@ class UserAPI(RouteInterface):
         self.session = session
         self.router = APIRouter()
         self.setup_routes()
+        
+        # Services
+        self.service = UserService
     
     def setup_routes(self):
+        # Route Methods
         @self.router.get("/user/{id}")
-        async def getUser(id: int, response: Response):
-            if id == None:
-                return {
-                    "message": "bad request"
-                }
+        async def getUser(id: int, response: Response) -> JSONResponse:
             try:
-                user = User.get_user(id)
-                    
-                if (user == None):
-                    raise Exception("User not found.")
-                
+                user = self.service.getUser(id)
+               
+                response.status_code = status.HTTP_200_OK
                 return user
             except Exception as e:
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-                return {
-                    "message": str(e)
-                }
+                return JSONResponse(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    content={
+                        "message": str(e)
+                    }
+                )
                 
         @self.router.post("/user", status_code=status.HTTP_201_CREATED)
         async def user(request: UserJson, response: Response):
             try:
-                data = request.json()
-                
-                # Process data below
-                print(data)
-                # with self.session() as session:
-                #     session.add()
-                # End Process
-                
-                return jsonResponse(data)
-            except FastAPIError as e:
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-                return {
-                    "message": str(e)
-                }
+                user = request.json()
+                self.service.user(user)
+                return JSONResponse(
+                    status_code=status.HTTP_201_CREATED,
+                    content=json.loads(user)
+                )
             except Exception as e:
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-                return {
-                    "message": str(e)
-                }
+                return JSONResponse(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    content={
+                        "message": str(e)
+                    }
+                )
+                
+        @self.router.patch("/user/{id}", status_code=status.HTTP_201_CREATED)
+        async def user(id: int, request: UserJson, response: Response):
+            try:
+                user = self.service.updateUser(id, request)
+                return JSONResponse(
+                    status_code=status.HTTP_201_CREATED,
+                    content=user
+                )
+            except Exception as e:
+                return JSONResponse(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    content={
+                        "message": str(e)
+                    }
+                )
             
