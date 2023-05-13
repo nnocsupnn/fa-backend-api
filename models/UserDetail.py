@@ -13,12 +13,12 @@ class UserDetail(Base):
     retirement_package = Column(Float(asdecimal=True), unique=True, index=True)
     life_expectancy = Column(Integer, index=True)
     
-    user = relationship("User", back_populates=__tablename__, lazy="joined")
+    user = relationship("User", back_populates=__tablename__, lazy="select")
     incomes = relationship("Incomes", back_populates=__tablename__, lazy="joined")
     expenses = relationship("Expenses", back_populates=__tablename__, lazy="joined")
     
     def getUserDetail(id: int):
         db = SessionLocal()
-        result = db.query(UserDetail).options(joinedload(UserDetail.income)).options(joinedload(UserDetail.expenses)).filter(UserDetail.user_id == id).first()
+        result = db.query(UserDetail).options(joinedload(UserDetail.incomes)).options(joinedload(UserDetail.expenses)).filter(UserDetail.user_id == id).first()
         db.close()
         return result

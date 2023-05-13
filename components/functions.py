@@ -5,6 +5,8 @@ import json
 from fastapi import status
 from fastapi.responses import Response
 from sqlalchemy.ext.declarative import DeclarativeMeta
+from dotenv import dotenv_values
+config = dotenv_values(".env")
 
 def load_classes_from_folder(folder_path):
     class_list = []

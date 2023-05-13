@@ -27,6 +27,7 @@ class TestAPI(RouteInterface):
                 )
                 
                 db.add_all([rank, industry])
+                db.commit()
                 
                 occ = Occupation(
                     description="VPIT",

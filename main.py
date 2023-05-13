@@ -6,7 +6,7 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 
 from components.db import Base, SessionLocal, engine, User, UserDetail, Occupation, Incomes, IncomeProtection, IncomeProtectionProvision, Dependencies, DependencyDetail, DependencyProvision, Expenses, TextTemplate
 from components.functions import nullCheckingResponse
-from routes import UserAPI, AuthAPI, TestAPI
+from routes import UserAPI, AuthAPI, TestAPI, UserDetailAPI
 from security.jwt_auth import AuthSecurity
 
 # Intialize db (DDL)
@@ -27,6 +27,7 @@ app = authSecurity.getApp()
 app.include_router(TestAPI(SessionLocal).router)
 app.include_router(AuthAPI(SessionLocal).router)
 app.include_router(UserAPI(SessionLocal).router, dependencies=[Depends(authSecurity.auth_user)])
+app.include_router(UserDetailAPI(SessionLocal).router, dependencies=[Depends(authSecurity.auth_user)])
 
 # Start Server
 if __name__ == "__main__":

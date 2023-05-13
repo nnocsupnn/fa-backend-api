@@ -1,5 +1,5 @@
 import json
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Response, status, Depends
 from fastapi.exceptions import FastAPIError
 from fastapi.responses import JSONResponse
 from models import User
@@ -9,7 +9,8 @@ from interfaces.json.api_dtos import User as UserJson, Occupation
 from services import UserService
 from decorator.json_encoder import CustomJSONEncoder
 from components.functions import serialize_model
-
+from fastapi_jwt_auth import AuthJWT
+import jwt
 '''
 UserAPI is class for User Resource
 
@@ -28,7 +29,15 @@ class UserAPI(RouteInterface):
         self.service = UserService
     
     def setup_routes(self):
-        # Route Methods
+        # Route Methodss
+        
+        @self.router.get("/user/me")
+        async def me(auth: AuthJWT = Depends()):
+            userId = auth.get_jwt_subject()
+            user = User.get_user(user_id=userId)
+            
+            return user
+        
         @self.router.get("/user/{id}")
         async def getUser(id: int, response: Response) -> JSONResponse:
             try:
@@ -39,9 +48,7 @@ class UserAPI(RouteInterface):
             except Exception as e:
                 return JSONResponse(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content={
-                        "message": str(e)
-                    }
+                    content=self.default_error_response(str(e))
                 )
                 
         @self.router.post("/user", status_code=status.HTTP_201_CREATED)
@@ -56,24 +63,18 @@ class UserAPI(RouteInterface):
             except Exception as e:
                 return JSONResponse(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content={
-                        "message": str(e)
-                    }
+                    content=self.default_error_response(str(e))
                 )
                 
         @self.router.patch("/user/{id}", status_code=status.HTTP_201_CREATED)
         async def user(id: int, request: UserJson, response: Response):
             try:
                 user = self.service.updateUser(id, request)
-                return JSONResponse(
-                    status_code=status.HTTP_201_CREATED,
-                    content=user
-                )
+                response.status_code = status.HTTP_200_OK
+                return user
             except Exception as e:
                 return JSONResponse(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content={
-                        "message": str(e)
-                    }
+                    content=self.default_error_response(str(e))
                 )
             

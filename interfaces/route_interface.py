@@ -9,3 +9,9 @@ class RouteInterface(ABC):
     @abstractmethod
     def setup_routes(self):
         pass
+    
+    def default_error_response(self, message):
+        return {
+            "status": 500,
+            "message": message
+        }

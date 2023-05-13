@@ -5,6 +5,7 @@ from models.Occupation import Occupation
 import bcrypt
 
 class User(Base):
+    PW_ENCODING = "utf-8"
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -51,7 +52,7 @@ class User(Base):
     
     @validates('password')
     def validate_password(self, key, password):
-        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        return bcrypt.hashpw(password.encode(self.PW_ENCODING), bcrypt.gensalt())
     
     def check_password(self, password):
-        return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
+        return bcrypt.checkpw(password.encode(self.PW_ENCODING), self.password.encode(self.PW_ENCODING))

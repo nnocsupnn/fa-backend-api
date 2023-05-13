@@ -35,14 +35,21 @@ class Occupation(BaseModel):
     rank: str
     industry: str
 
+class UserDetail(BaseModel):
+    year_business: Optional[int] = None
+    retirement_age: Optional[int] = None
+    retirement_package: Optional[float] = None
+    life_expectancy: Optional[int] = None
+    
 class User(BaseModel):
     first_name: str
     middle_name: Optional[str] = None
     last_name: str
     email_address: str
     date_of_birth: date
-    marital: Marital
+    marital: Optional[Marital] = None
     occupation: Optional[Occupation] = None
+    user_detail: Optional[UserDetail] = None
     
 class Dependencies(BaseModel):
     user_id: int

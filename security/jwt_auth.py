@@ -6,12 +6,12 @@ from fastapi.security import HTTPBearer
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-import jwt
+from components.functions import config
 
 security = HTTPBearer()
 
 class Settings(BaseModel):
-    authjwt_secret_key: str = "s3cR3t!123"
+    authjwt_secret_key: str = config['APP_SECRET']
 
 class AuthSecurity:
     router = APIRouter()
@@ -43,16 +43,14 @@ class AuthSecurity:
         
         auth_jwt_exception = JWTDecodeError(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            message="Invalid authentication credentials",
+            message="Invalid authentication credentials"
         )
         
         try:
             auth.jwt_required()
             
-            token = auth.get_raw_jwt()
+            auth.get_raw_jwt()
             current_user = auth.get_raw_jwt()
-            
-            print(current_user)
             
             return current_user["sub"]
         except Exception as e:
