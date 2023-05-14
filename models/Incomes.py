@@ -8,8 +8,8 @@ class Incomes(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_detail_id = Column(Integer, ForeignKey("user_detail.id"), index=True)
-    income_amount = Column(Float, index=True)
-    income_type = Column(String(30), index=True)
+    income_amount = Column(Float, index=True, nullable=False)
+    income_type = Column(String(30), index=True, nullable=False)
     description = Column(String(50), index=True)
     income_started_date = Column(DateTime, index=True)
     income_end_date = Column(DateTime, index=True, default=None)

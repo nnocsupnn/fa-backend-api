@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import date
 from enum import Enum
 from typing import Optional
@@ -40,6 +40,17 @@ class UserDetail(BaseModel):
     retirement_age: Optional[int] = None
     retirement_package: Optional[float] = None
     life_expectancy: Optional[int] = None
+    
+class UserRegister(BaseModel):
+    first_name: str
+    middle_name: Optional[str] = None
+    last_name: str
+    email_address: str
+    date_of_birth: date
+    marital: Optional[Marital] = None
+    occupation: Optional[Occupation] = None
+    user_detail: Optional[UserDetail] = None
+    password: str = Field(alias="password", min_length=8, regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$")
     
 class User(BaseModel):
     first_name: str

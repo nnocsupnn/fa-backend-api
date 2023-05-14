@@ -45,6 +45,7 @@ class TestAPI(RouteInterface):
                     password="user12345",
                     date_of_birth=datetime.date(1996, 1, 21),
                     marital="married",
+                    active=1, # activate
                     occupation_id=occ.id
                 )
                 
@@ -93,22 +94,29 @@ class TestAPI(RouteInterface):
                 
                 expense_tt1 = TextTemplate(
                     code="TUITION",
-                    category="expenses",
+                    category="expenses_type",
                     description="Tuition"
                 )
                 
                 expense_tt2 = TextTemplate(
                     code="GUCCI_BAG",
-                    category="expenses",
+                    category="expenses_type",
                     description="Gucci Bag"
                 )
                 
-                db.add_all([expense_tt1, expense_tt2])
+                expense_tt1_cat = TextTemplate(
+                    code="LIFESTYLE",
+                    category="expenses_category",
+                    description="Lifestyle Expenses"
+                )
+                
+                db.add_all([expense_tt1, expense_tt2, expense_tt1_cat])
                 db.commit()
                 
                 expense1 = Expenses(
                     user_detail_id=user_d.id,
                     expense_amount=50000,
+                    expense_category=expense_tt1_cat.code,
                     expense_type=expense_tt1.code,
                     description="Tuition ni Junior",
                     expense_started_date=datetime.date(2022, 1, 22),
@@ -118,6 +126,7 @@ class TestAPI(RouteInterface):
                 expense2 = Expenses(
                     user_detail_id=user_d.id,
                     expense_amount=150000,
+                    expense_category=expense_tt1_cat.code,
                     expense_type=expense_tt2.code,
                     description="Gucci wallet",
                     expense_started_date=datetime.date(2022, 1, 22),

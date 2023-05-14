@@ -1,8 +1,8 @@
-from models import User
+from models import User, Occupation
 from json import loads
 from fastapi.exceptions import FastAPIError
 
-from interfaces.json.api_dtos import User as UserJson
+from interfaces.json.api_dtos import User as UserJson, UserRegister
 from components.db import SessionLocal as Session
 
 class UserService:
@@ -17,15 +17,34 @@ class UserService:
             raise e
     
     
-    def user(user):
+    def user(user: UserRegister):
         try:
             # Process data below
-            print(user)
-            # with self.session() as session:
-            #     session.add()
-            # End Process
-            
-            return loads(user)
+            with Session() as db:
+                occupation = Occupation(
+                    description=user.occupation.description,
+                    rank=user.occupation.rank,
+                    industry=user.occupation.industry
+                )
+                
+                db.add(occupation)
+                
+                userModel = User(
+                    first_name=user.first_name,
+                    last_name=user.last_name,
+                    middle_name=user.middle_name,
+                    marital=user.marital,
+                    date_of_birth=user.date_of_birth,
+                    email_address=user.email_address,
+                    occupation_id=occupation.id,
+                    password=user.password
+                )
+                
+                db.add(userModel)
+                db.commit()
+                db.close()
+                
+            return True
         except Exception as e:
             raise e
         

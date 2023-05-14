@@ -52,6 +52,9 @@ class AuthAPI(RouteInterface):
                 if user != None and not user.check_password(password=password) or user == None:
                     raise Exception("Invalid credential")
                     
+                if user.active == 0:
+                    raise Exception(f"User '{user.email_address}' is not activated. Please contact admin.")
+                
                 if grant_type == "password":
                     expireDelta = timedelta(minutes=15)
                     epochSeconds = (datetime.now() + expireDelta).timestamp()
