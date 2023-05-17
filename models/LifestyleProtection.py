@@ -3,12 +3,16 @@ from sqlalchemy.orm import relationship
 
 from config.db import Base, SessionLocal, engine
 
-class DependencyProvision(Base):
-    __tablename__ = "dependency_provision"
+class LifestyleProtection(Base):
+    __tablename__ = "lifestyle_protection"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("user.id"), index=True)
-    amount = Column(Float, index=True)
+    existing_provision = Column(Float, index=True, nullable=False)
+    source_fund = Column(Float, index=True, nullable=False)
+    gov_fund = Column(Float, index=True, nullable=False)
+    other_fund = Column(Float, index=True, nullable=False)
+    
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     

@@ -6,7 +6,7 @@ from fastapi.security import HTTPBearer
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from components.functions import config
+from config.functions import config
 
 security = HTTPBearer()
 

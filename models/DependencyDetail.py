@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, func
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, Enum, func
 from sqlalchemy.orm import relationship
 
-from components.db import Base, SessionLocal, engine
+from config.db import Base, SessionLocal, engine
 
 class DependencyDetail(Base):
     __tablename__ = "dependency_detail"
@@ -12,7 +12,10 @@ class DependencyDetail(Base):
     target_years = Column(Integer, index=True)
     target_entry_age = Column(Integer, index=True)
     age_before_entry = Column(Integer, index=True)
-    amount = Column(Float, index=True)
+    primary_lvl_annual = Column(Float, index=True, nullable=False)
+    secondary_lvl_annual = Column(Float, index=True, nullable=False)
+    tertiary_lvl_annual = Column(Float, index=True, nullable=False)
+    tuition_fee_incr_perc = Column(Integer, index=True, nullable=False)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     

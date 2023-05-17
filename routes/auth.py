@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Response, Depends, status
-from fastapi.exceptions import FastAPIError
 from models import User
-from sqlalchemy.orm import joinedload
 from interfaces.route_interface import RouteInterface
 from interfaces.json.api_dtos import AuthenticationJson
 from fastapi.responses import JSONResponse

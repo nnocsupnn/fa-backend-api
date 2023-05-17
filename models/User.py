@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Enum, Date, ForeignKey
 from sqlalchemy.orm import relationship, joinedload, validates
-from components.db import Base, SessionLocal, engine
+from config.db import Base, SessionLocal, engine
 from models.Occupation import Occupation
 import bcrypt
 

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, Date, func
 from sqlalchemy.orm import relationship
 
-from components.db import Base, SessionLocal, engine
+from config.db import Base, SessionLocal, engine
 
 class IncomeProtection(Base):
     __tablename__ = "income_protection"

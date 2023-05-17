@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI, Depends
-from components.db import Base, SessionLocal, engine
-from components.functions import nullCheckingResponse
+from config.db import Base, SessionLocal, engine
+from config.functions import nullCheckingResponse
 from routes import *
 from security.jwt_auth import AuthSecurity
 

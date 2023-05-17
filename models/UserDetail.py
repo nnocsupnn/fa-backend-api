@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship, joinedload
 
-from components.db import Base, SessionLocal, engine
+from config.db import Base, SessionLocal, engine
 
 class UserDetail(Base):
     __tablename__ = "user_detail"

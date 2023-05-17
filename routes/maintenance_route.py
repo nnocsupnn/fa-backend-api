@@ -1,6 +1,6 @@
 from interfaces.route_interface import RouteInterface
 from fastapi import APIRouter
-from components.db import Base, SessionLocal, engine, User, UserDetail, Occupation, Incomes, IncomeProtection, IncomeProtectionProvision, Dependencies, DependencyDetail, DependencyProvision, Expenses, TextTemplate
+from config.db import Base, SessionLocal, engine, User, UserDetail, Occupation, Incomes, IncomeProtection, IncomeProtectionProvision, Dependencies, DependencyDetail, DependencyProvision, Expenses, TextTemplate
 import datetime
 
 class TestAPI(RouteInterface):
@@ -112,7 +112,11 @@ class TestAPI(RouteInterface):
                 
                 db.add_all([expense_tt1, expense_tt2, expense_tt1_cat])
                 db.commit()
-                
+                '''
+                lifestyle 
+                    GUCCI_BAG
+                    TUITION
+                '''
                 expense1 = Expenses(
                     user_detail_id=user_d.id,
                     expense_amount=50000,
@@ -153,14 +157,17 @@ class TestAPI(RouteInterface):
                     target_years=2024,
                     target_entry_age=5,
                     age_before_entry=2,
-                    amount=10000
+                    primary_lvl_annual = 10000,
+                    secondary_lvl_annual = 20000,
+                    tertiary_lvl_annual = 30000,
+                    tuition_fee_incr_perc = 6,
                 )
                 
                 db.add(dependent1_d)
                 
                 dependent1_prov = DependencyProvision(
                     user_id=user.id,
-                    amount=10000
+                    amount=120000
                 )
                 
                 db.add(dependent1_prov)

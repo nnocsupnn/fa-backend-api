@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, func
 
-from components.db import Base, SessionLocal, engine
+from config.db import Base, SessionLocal, engine
 
 class TextTemplate(Base):
     __tablename__ = "text_template"

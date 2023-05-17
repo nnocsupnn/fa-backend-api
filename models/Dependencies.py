@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum, DateTime, Date, func
 from sqlalchemy.orm import relationship as rel
 
-from components.db import Base, SessionLocal, engine
+from config.db import Base, SessionLocal, engine
 
 class Dependencies(Base):
     __tablename__ = "dependencies"

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, func
 from sqlalchemy.orm import relationship, validates
-from components.db import Base, SessionLocal, engine
+from config.db import Base, SessionLocal, engine
 from models.TextTemplate import TextTemplate
 
 class Occupation(Base):

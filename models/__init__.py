@@ -9,4 +9,5 @@ from models.DependencyProvision import DependencyProvision
 from models.DependencyDetail import DependencyDetail
 from models.IncomeProtection import IncomeProtection
 from models.IncomeProtectionProvision import IncomeProtectionProvision
+from models.LifestyleProtection import LifestyleProtection
 
