@@ -10,7 +10,7 @@ class UserDetail(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     year_business = Column(Integer, index=True)
     retirement_age = Column(Integer, index=True)
-    retirement_package = Column(Float(asdecimal=True), unique=True, index=True)
+    retirement_package = Column(Float(asdecimal=True), index=True)
     life_expectancy = Column(Integer, index=True)
     
     user = relationship("User", back_populates=__tablename__, lazy="select")

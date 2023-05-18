@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from datetime import date
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 '''
 Enums
@@ -27,48 +27,15 @@ class Marital(str, Enum):
     separated = "separated"
     widowed = "widowed"
 
+class TextTemplateCategory(str, Enum):
+    expenses = "expenses"
+    education = "education"
+    rank = "rank"
+    industry = "industry"
+
 '''
 Models
 '''
-class Occupation(BaseModel):
-    description: str
-    rank: str
-    industry: str
-
-class UserDetail(BaseModel):
-    year_business: Optional[int] = None
-    retirement_age: Optional[int] = None
-    retirement_package: Optional[float] = None
-    life_expectancy: Optional[int] = None
-    
-class UserRegister(BaseModel):
-    first_name: str
-    middle_name: Optional[str] = None
-    last_name: str
-    email_address: str
-    date_of_birth: date
-    marital: Optional[Marital] = None
-    occupation: Optional[Occupation] = None
-    user_detail: Optional[UserDetail] = None
-    password: str = Field(alias="password", min_length=8, regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$")
-    
-class User(BaseModel):
-    first_name: str
-    middle_name: Optional[str] = None
-    last_name: str
-    email_address: str
-    date_of_birth: date
-    marital: Optional[Marital] = None
-    occupation: Optional[Occupation] = None
-    user_detail: Optional[UserDetail] = None
-    
-class Dependencies(BaseModel):
-    user_id: int
-    name: str
-    gender: Gender
-    relationship: Relationship
-    date_of_birth: date
-    
 class DependencyDetail(BaseModel):
     dependency_id: int
     type: str
@@ -108,11 +75,51 @@ class IncomeProtectionProvision(BaseModel):
     date_started: date
     
 class TextTemplate(BaseModel):
-    code: str
     description: str
-    category: str
+    category: TextTemplateCategory
+    
+class Occupation(BaseModel):
+    description: str
+    rank: str
+    industry: str
 
-
+class UserDetail(BaseModel):
+    year_business: Optional[int] = None
+    retirement_age: Optional[int] = None
+    retirement_package: Optional[float] = None
+    life_expectancy: Optional[int] = None
+    
+class UserRegister(BaseModel):
+    first_name: str
+    middle_name: Optional[str] = None
+    last_name: str
+    email_address: str
+    date_of_birth: date
+    marital: Optional[Marital] = None
+    occupation: Optional[Occupation] = None
+    user_detail: Optional[UserDetail] = None
+    password: str = Field(alias="password", min_length=8, regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$")
+    
+class User(BaseModel):
+    first_name: Optional[str] = None
+    middle_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email_address: Optional[str] = None
+    date_of_birth: Optional[date] = None
+    marital: Optional[Marital] = None
+    occupation: Optional[Occupation] = None
+    user_detail: Optional[UserDetail] = None
+    user_level: Optional[str] = None
+    active: Optional[int] = None
+    is_locked: Optional[int] = None
+    
+class Dependencies(BaseModel):
+    user_id: int
+    name: str
+    gender: Gender
+    relationship: Relationship
+    date_of_birth: date
+    
 # Auth
 
 class GrantType(str, Enum):

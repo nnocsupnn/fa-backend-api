@@ -10,7 +10,6 @@ class Expenses(Base):
     user_detail_id = Column(Integer, ForeignKey("user_detail.id"), index=True)
     expense_amount = Column(Float, index=True, nullable=False)
     expense_category = Column(String(30), index=True, nullable=False)
-    expense_type = Column(String(30), index=True, nullable=False)
     description = Column(String(50), index=True)
     expense_started_date = Column(DateTime, index=True)
     expense_end_date = Column(DateTime, index=True)

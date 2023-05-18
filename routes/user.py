@@ -39,6 +39,23 @@ class UserAPI(RouteInterface):
             
             return user
         
+        @self.router.get("/users")
+        async def me(auth: AuthJWT = Depends()):
+            try:
+                userId = auth.get_jwt_subject()
+                user = User.get_user(user_id=userId)
+                
+                # if not user.user_level.__eq__("admin"):
+                #     raise Exception("You are not allowed on this path.")
+                
+                users = User.get_users()
+                return users
+            except Exception as e:
+                return JSONResponse(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    content=self.default_error_response(str(e), status.HTTP_401_UNAUTHORIZED)
+                )
+        
         @self.router.get("/user/{id}")
         async def getUser(id: int, response: Response) -> JSONResponse:
             try:
@@ -59,7 +76,7 @@ class UserAPI(RouteInterface):
                 self.service.user(request)
                 response.status_code = status.HTTP_201_CREATED
                 return JSONResponse(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    status_code=status.HTTP_201_CREATED,
                     content={
                         "status": status.HTTP_201_CREATED,
                         "message": "Your account is created. Please contact admin for activation."

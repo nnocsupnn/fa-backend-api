@@ -8,18 +8,6 @@
 
 ---
 
-### Generate scripts
-
-```bash
-python -m alembic revision --autogenerate -m "commit message"
-```
-
-### Update Schema (latest generated)
-
-```bash
-python -m alembic upgrade head
-```
-
 ### Start the API
 
 ```bash
@@ -28,6 +16,14 @@ pip install -r dependency.txt
 
 ```bash
 python main.py
+```
+
+## Populating test data
+
+Send Request ot this resource to populate test data. (Trigger only once)
+
+```markdown
+GET /populate
 ```
 
 ## Docker

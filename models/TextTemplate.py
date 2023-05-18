@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, func
-
 from config.db import Base, SessionLocal, engine
+
 
 class TextTemplate(Base):
     __tablename__ = "text_template"
@@ -11,10 +11,21 @@ class TextTemplate(Base):
     category = Column(String(50), index=True, nullable=False)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
-    
+        
     @staticmethod
     def getTemplate(subj: str):
         db = SessionLocal()
-        result = db.query(TextTemplate).get({ "code": subj })
+        print(subj)
+        result = db.query(TextTemplate).filter(TextTemplate.code == subj).first()      
         db.close()
         return result
+    
+
+    @staticmethod
+    def getTemplates():
+        db = SessionLocal()
+        results = db.query(TextTemplate).all()
+        db.close()
+        return results
+    
+    

@@ -24,7 +24,7 @@ app = authSecurity.getApp()
 After creating the routes services, you need to add the API Class here under resource var 
 to automatically include in the registered routes
 '''
-resource = [UserAPI, UserDetailAPI]
+resource = [UserAPI, UserDetailAPI, TextTemplateAPI]
 
 '''
 Exception routes for auth and other special cases

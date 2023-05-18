@@ -1,4 +1,4 @@
-from models import User, Occupation
+from models import User, Occupation, UserDetail
 from json import loads
 from fastapi.exceptions import FastAPIError
 
@@ -27,6 +27,7 @@ class UserService:
             )
             
             db.add(occupation)
+            db.commit()
             
             userModel = User(
                 first_name=user.first_name,
@@ -40,6 +41,19 @@ class UserService:
             )
             
             db.add(userModel)
+            db.commit()
+            
+            if user.user_detail != None:
+                userDetail = UserDetail(
+                    user_id=userModel.id,
+                    year_business=user.user_detail.year_business,
+                    retirement_age=user.user_detail.retirement_age,
+                    retirement_package=user.user_detail.retirement_package,
+                    life_expectancy=user.user_detail.life_expectancy
+                )
+                
+                db.add(userDetail)
+                
             db.commit()
             db.close()
             
@@ -70,8 +84,9 @@ class UserService:
                                 
                     
                     continue
-                
-                setattr(userModel, field_name, getattr(user, field_name))
+                else:
+                    if getattr(user, field_name) != None:
+                        setattr(userModel, field_name, getattr(user, field_name))
                 
             db.commit()
             db.refresh(userModel)

@@ -10,8 +10,8 @@ class RouteInterface(ABC):
     def setup_routes(self):
         pass
     
-    def default_error_response(self, message):
+    def default_error_response(self, message, statusCode: int = 500):
         return {
-            "status": 500,
+            "status": statusCode,
             "message": message
         }

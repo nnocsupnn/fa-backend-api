@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Enum, Date, ForeignKey, Boolean
 from sqlalchemy.orm import relationship, joinedload, validates
 from config.db import Base, SessionLocal, engine
 from models.Occupation import Occupation
@@ -14,11 +14,12 @@ class User(Base):
     middle_name = Column(String(35), index=True)
     email_address = Column(String(50), unique=True, index=True, nullable=False)
     password = Column(String(255), nullable=False)
-    active = Column(Integer, index=True, default=0)
+    active = Column(Boolean, index=True, default=False)
     date_of_birth = Column(Date(), index=True)
     marital = Column(Enum("single", "married", "divorced", "separated", "widowed"), index=True, nullable=False)
     occupation_id = Column(Integer, ForeignKey('occupation.id'), index=True, nullable=True)
-    user_level = Column(Enum("admin", "user"), index=True, default="user")
+    user_level = Column(Enum("admin", "user"), index=True, default="user", nullable=False)
+    deletable = Column(Boolean, index=True, default=False, nullable=False)
     
     # Relationships
     occupation = relationship("Occupation", back_populates="users", lazy="joined")
@@ -26,6 +27,7 @@ class User(Base):
     dependencies = relationship("Dependencies", back_populates=__tablename__, cascade="all", lazy="joined")
     dependency_provision = relationship("DependencyProvision", back_populates=__tablename__, cascade="all", lazy="joined")
     income_protection = relationship("IncomeProtection", back_populates=__tablename__, cascade="all", lazy="joined")
+    lifestyle_protection = relationship("LifestyleProtection", back_populates=__tablename__, cascade="all", lazy="joined")
 
     @staticmethod
     def get_user(user_id: int):
@@ -33,6 +35,13 @@ class User(Base):
         user = db.query(User).options(joinedload(User.user_detail)).options(joinedload(User.occupation)).options(joinedload(User.dependencies)).filter(User.id == user_id).first()
         db.close()
         return user
+    
+    @staticmethod
+    def get_users():
+        db = SessionLocal()
+        users = db.query(User).all()
+        db.close()
+        return users
     
     @staticmethod
     def get_user_detail(user_id: int):

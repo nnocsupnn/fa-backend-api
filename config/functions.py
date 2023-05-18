@@ -6,6 +6,8 @@ from fastapi import status
 from fastapi.responses import Response
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from dotenv import dotenv_values
+import re
+
 config = dotenv_values(".env")
 
 def load_classes_from_folder(folder_path):
@@ -44,3 +46,19 @@ def serialize_model(model):
         return result
     else:
         return None
+
+def make_code_string(input_string):
+    # Remove non-alphanumeric characters and convert spaces to underscores
+    cleaned_string = re.sub(r'\W+', '', input_string).replace(' ', '_')
+
+    # Ensure the resulting string starts with a letter
+    if cleaned_string and not cleaned_string[0].isalpha():
+        cleaned_string = 'A' + cleaned_string
+
+    # Truncate the string to a desired length (e.g., 10 characters)
+    code_string = cleaned_string[:10]
+
+    # Convert the string to uppercase
+    code_string = code_string.upper()
+
+    return code_string
