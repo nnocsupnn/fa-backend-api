@@ -7,9 +7,8 @@ class DependencyProvision(Base):
     __tablename__ = "dependency_provision"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("user.id"), index=True)
     amount = Column(Float, index=True)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     
-    user = relationship("User", back_populates=__tablename__, cascade="all", lazy="select")
+    dependency_detail = relationship("DependencyDetail", back_populates=__tablename__, cascade="all", lazy="select")

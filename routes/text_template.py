@@ -7,7 +7,6 @@ from sqlalchemy.orm import joinedload
 from interfaces.route_interface import RouteInterface
 from interfaces.json.api_dtos import TextTemplate as TextTemplateJson
 from services import TextTemplateService
-from decorator.json_encoder import CustomJSONEncoder
 from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
 import jwt

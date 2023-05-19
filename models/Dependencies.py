@@ -8,12 +8,29 @@ class Dependencies(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("user.id"), index=True)
-    name = Column(String(50), index=True)
+    name = Column(String(50), index=True, unique=True)
     gender = Column(Enum("female", "male"), index=True)
-    relationship = Column(Enum("son", "daughter", "mother", "father", "grand_mother", "grand_father", "sister", "brother"), index=True)
+    relationship = Column(Enum("son", "daughter", "mother", "father", "grand_mother", "grand_father", "sister", "brother", "wife"), index=True)
     date_of_birth = Column(Date(), index=True)
+    dependency_detail_id = Column(Integer, ForeignKey("dependency_detail.id"), index=True, unique=True)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     
     user = rel("User", back_populates=__tablename__, cascade="all", lazy="select")
-    dependency_detail = rel("DependencyDetail", back_populates=__tablename__, lazy="select", cascade="all")
+    dependency_detail = rel("DependencyDetail", back_populates=__tablename__, lazy="joined", cascade="all")
+    
+    
+    @staticmethod
+    def getDependencies():
+        db = SessionLocal()
+        dependencies = db.query(Dependencies).all()
+        db.close()
+        return dependencies
+    
+
+    @staticmethod
+    def getDependency(id: int):
+        db = SessionLocal()
+        dependency = db.query(Dependencies).filter(Dependencies.id == id).first()
+        db.close()
+        return dependency

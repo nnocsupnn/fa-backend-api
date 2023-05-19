@@ -19,6 +19,7 @@ class Relationship(str, Enum):
     grand_father = "grand_father"
     sister = "sister"
     brother = "brother"
+    wife = "wife"
     
 class Marital(str, Enum):
     single = "single"
@@ -36,17 +37,33 @@ class TextTemplateCategory(str, Enum):
 '''
 Models
 '''
-class DependencyDetail(BaseModel):
-    dependency_id: int
-    type: str
-    target_years: int
-    target_entry_age: int
-    age_before_entry: int
+
+class DependencyProvision(BaseModel):
     amount: float
     
-class DependencyProvision(BaseModel):
-    user_id: int
-    amount: float
+class DependencyDetail(BaseModel):
+    target_entry_age: Optional[int] = None
+    age_before_entry: Optional[int] = None
+    primary_lvl_annual: Optional[float] = None
+    secondary_lvl_annual: Optional[float] = None
+    tertiary_lvl_annual: Optional[float] = None
+    primary_lvl_years: Optional[int] = None
+    secondary_lvll_years: Optional[int] = None
+    tertiary_lvll_years: Optional[int] = None
+    tuition_fee_incr_perc: Optional[int] = None
+    dependency_provision: Optional[DependencyProvision] = None
+    
+class DependencyDetailPostJson(BaseModel):
+    target_entry_age: int
+    age_before_entry: int
+    primary_lvl_annual: float
+    secondary_lvl_annual: float
+    tertiary_lvl_annual: float
+    primary_lvl_years: int
+    secondary_lvl_years: int
+    tertiary_lvl_years: int
+    tuition_fee_incr_perc: int
+    dependency_provision: Optional[DependencyProvision] = None
     
 class Expenses(BaseModel):
     user_detail_id: int
@@ -114,7 +131,12 @@ class User(BaseModel):
     is_locked: Optional[int] = None
     
 class Dependencies(BaseModel):
-    user_id: int
+    name: Optional[str] = None
+    gender: Optional[Gender] = None
+    relationship: Optional[Relationship] = None
+    date_of_birth: Optional[date] = None
+    
+class DependenciesPostJson(BaseModel):
     name: str
     gender: Gender
     relationship: Relationship

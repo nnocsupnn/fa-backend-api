@@ -25,7 +25,6 @@ class User(Base):
     occupation = relationship("Occupation", back_populates="users", lazy="joined")
     user_detail = relationship("UserDetail", back_populates=__tablename__, lazy="joined", uselist=False)
     dependencies = relationship("Dependencies", back_populates=__tablename__, cascade="all", lazy="joined")
-    dependency_provision = relationship("DependencyProvision", back_populates=__tablename__, cascade="all", lazy="joined")
     income_protection = relationship("IncomeProtection", back_populates=__tablename__, cascade="all", lazy="joined")
     lifestyle_protection = relationship("LifestyleProtection", back_populates=__tablename__, cascade="all", lazy="joined")
 
