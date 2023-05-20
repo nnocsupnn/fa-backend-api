@@ -26,7 +26,7 @@ class DependencyDetail(Base):
     
     dependencies = relationship("Dependencies", back_populates=__tablename__, cascade="all", lazy="select")
     dependency_provision = relationship("DependencyProvision", back_populates=__tablename__, lazy="joined")
-    dependencies = relationship("Dependencies", back_populates=__tablename__, lazy="joined")
+    dependencies = relationship("Dependencies", back_populates=__tablename__, lazy="select")
     
     @staticmethod
     def getDetail(id: int):

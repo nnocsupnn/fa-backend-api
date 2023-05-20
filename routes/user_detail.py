@@ -28,28 +28,40 @@ class UserDetailAPI(RouteInterface):
         self.service = UserDetailService
         
     def setup_routes(self):
-        @self.router.get("/user/{id}/detail")
-        async def getDetail(id: int, response: Response):
-            try:
-                user = self.service.getDetail(id)
-               
-                response.status_code = status.HTTP_200_OK
-                return user
-            except Exception as e:
-                return JSONResponse(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content=self.default_error_response(str(e))
-                )
+        
+        @self.router.get("/user/current/detail", summary="Get current user detail")
+        async def getCurrentUserDetail(response: Response, auth: AuthJWT = Depends()):
+            auth.jwt_required()
+            userId = auth.get_jwt_subject()
+            
+            user = self.service.getDetail(userId)
+            
+            response.status_code = status.HTTP_200_OK
+            return user
                 
-        @self.router.patch("/user/{id}/detail")
+        '''
+        '''   
+        @self.router.patch("/user/current/detail", summary="Get current user detail")
+        async def updateCurrentDetail(request: UserDetailJson, response: Response, auth: AuthJWT = Depends()):
+            auth.jwt_required()
+            userId = auth.get_jwt_subject()
+            user = self.service.update(userId, request)
+            
+            response.status_code = status.HTTP_200_OK
+            return user
+        '''
+        '''       
+        @self.router.get("/user/{id}/detail", summary="Get user's detail")
+        async def getDetail(id: int, response: Response):
+            user = self.service.getDetail(id)
+            
+            response.status_code = status.HTTP_200_OK
+            return user
+        '''
+        '''      
+        @self.router.patch("/user/{id}/detail", summary="Update user's detail")
         async def getDetail(id: int, request: UserDetailJson, response: Response):
-            try:
-                user = self.service.update(id, request)
-               
-                response.status_code = status.HTTP_200_OK
-                return user
-            except Exception as e:
-                return JSONResponse(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content=self.default_error_response(str(e))
-                )
+            user = self.service.update(id, request)
+            
+            response.status_code = status.HTTP_200_OK
+            return user

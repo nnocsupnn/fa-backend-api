@@ -2,7 +2,7 @@ from models import Dependencies, DependencyDetail, DependencyProvision
 from json import loads
 from fastapi.exceptions import FastAPIError
 from sqlalchemy.orm import joinedload
-
+from sqlalchemy import select
 from interfaces.json.api_dtos import User as UserJson, UserRegister, DependencyDetailPostJson, DependencyDetail as DependencyDetailJson
 from config.db import SessionLocal as Session
 
@@ -10,9 +10,11 @@ class DependencyDetailService:
     # get all
     def getDependencyDetail(id: int):
         db = Session()
-        detail = db.query(Dependencies)\
-            .filter(Dependencies.id == id)\
-            .first()
+        stmt = select(DependencyDetail).join(Dependencies).where(Dependencies.id == id)
+        detail = db.execute(stmt).first()[0]
+        # detail = db.query(Dependencies)\
+        #     .filter(Dependencies.id == id)\
+        #     .first()
             
         return detail
     
@@ -40,8 +42,8 @@ class DependencyDetailService:
             
             setattr(dep, "dependency_detail_id", depDetail.id)
         else:
-            depDetail = dep.dependency_detail
-        
+            raise Exception("DependencyDetail already has content.")
+
         
         if getattr(dependecy, "dependency_provision") != None and depDetail.dependency_provision == None:
             depProvision = DependencyProvision(
@@ -61,28 +63,32 @@ class DependencyDetailService:
 
     # patch
     def updateDependency(id: int, request: DependencyDetailJson):
-        db = Session()
-        dep = db.query(DependencyDetail).filter(DependencyDetail.dependency_id == id).first()
+        result = None
+        with Session() as db:
+            # dep = dependency.dependency_detail
+            stmt = select(DependencyDetail).join(Dependencies).where(Dependencies.id == id)
+            dep = db.execute(stmt).first()[0]
+            
+            if dep == None:
+                raise Exception("DependencyDetail not exists.")
+            
+            for field_name, field_type in request.__annotations__.items():
+                if getattr(request, field_name) != None and field_name != "dependency_provision":
+                    setattr(dep, field_name, getattr(request, field_name))
+                    
+                if field_name == "dependency_provision" and getattr(request, field_name) != None:
+                    if dep.dependency_provision_id != None:
+                        for dep_prov_name, dep_prov_type in request.dependency_provision.__annotations__.items():
+                            setattr(dep.dependency_provision, dep_prov_name, getattr(request.dependency_provision, dep_prov_name))
+                    else:
+                        dep_prov = DependencyProvision(amount=request.dependency_provision.amount)
+                        db.add(dep_prov)
+                        db.commit()
+                        setattr(dep.dependency_provision_id, "dependency_provision_id", dep_prov.id)
+                    
+            db.commit()
+            result = db.query(DependencyDetail).filter(DependencyDetail.id == dep.id).first()
+            db.refresh(dep)
+            db.close()
         
-        if dep == None:
-            raise Exception("DependencyDetail not exists.")
-        
-        for field_name, field_type in request.__annotations__.items():
-            if getattr(request, field_name) != None and field_name != "dependency_provision":
-                setattr(dep, field_name, getattr(request, field_name))
-                
-            if field_name == "dependency_provision" and getattr(request, field_name) != None:
-                if dep.dependency_provision_id != None:
-                    for dep_prov_name, dep_prov_type in request.dependency_provision.__annotations__.items():
-                        setattr(dep.dependency_provision, dep_prov_name, getattr(request.dependency_provision, dep_prov_name))
-                else:
-                    dep_prov = DependencyProvision(amount=request.dependency_provision.amount)
-                    db.add(dep_prov)
-                    db.commit()
-                    setattr(dep.dependency_provision_id, "dependency_provision_id", dep_prov.id)
-                
-        db.commit()
-        db.refresh(dep)
-        db.close()
-        
-        return dep
+        return result

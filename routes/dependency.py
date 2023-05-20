@@ -18,7 +18,7 @@ class DepdenciesAPI(RouteInterface):
         self.service = DependencyService
         
     def setup_routes(self):
-        @self.router.get("/dependencies/{dependencyId}")
+        @self.router.get("/dependency/{dependencyId}", summary="Getting dependency")
         async def getDependencies(dependencyId: int, response: Response):
             try:
                 dependency = Dependencies.getDependency(dependencyId)
@@ -31,50 +31,36 @@ class DepdenciesAPI(RouteInterface):
                     status_code=status.HTTP_404_NOT_FOUND,
                     content=self.default_error_response(str(e), status.HTTP_404_NOT_FOUND)
                 )
-            except Exception as e:
-                return JSONResponse(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content=self.default_error_response(str(e))
-                )
-                
-        @self.router.get("/dependencies")
-        async def getDependencies(response: Response, auth: AuthJWT = Depends()):
-            try:
-                userId = auth.get_jwt_subject()
-                
-                dependencies = self.service.getDependencies(userId)
-                response.status_code = status.HTTP_200_OK
-                if dependencies == None:
-                    raise Exception("Not found.")
-                return dependencies
-            except Exception as e:
-                return JSONResponse(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content=self.default_error_response(str(e))
-                )
-                
-        @self.router.post("/dependencies")
+        '''
+        '''  
+        @self.router.get("/dependencies", summary="Listing dependencies")
+        async def getDependencies(response: Response, auth: AuthJWT = Depends()) -> DependenciesJson:
+            userId = auth.get_jwt_subject()
+            
+            dependencies = self.service.getDependencies(userId)
+            response.status_code = status.HTTP_200_OK
+            if dependencies == None:
+                raise Exception("Not found.")
+            return dependencies
+        '''
+        '''
+        @self.router.post("/dependency", summary="Adding Dependency", description="Adding dependency, please see the schema. This includes other property")
         async def postDependency(request: DependenciesPostJson, response: Response, auth: AuthJWT = Depends()):
-            try:
-                userId = auth.get_jwt_subject()
-                
-                self.service.dependency(userId, request)
-                response.status_code = status.HTTP_200_OK
-                return Dependencies.getDependencies()
-            except Exception as e:
-                return JSONResponse(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content=self.default_error_response(str(e))
-                )
-                
-        @self.router.patch("/dependencies/{dependencyId}")
+            userId = auth.get_jwt_subject()
+            self.service.dependency(userId, request)
+            response.status_code = status.HTTP_200_OK
+            return Dependencies.getDependencies()
+        '''
+        '''     
+        @self.router.patch("/dependency/{dependencyId}", summary="Updating dependency")
         async def updateDependency(dependencyId: int, request: DependenciesJson, response: Response):
-            try:
-                dependency = self.service.updateDependency(dependencyId, request)
-                response.status_code = status.HTTP_200_OK
-                return dependency
-            except Exception as e:
-                return JSONResponse(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content=self.default_error_response(str(e))
-                )
+            dependency = self.service.updateDependency(dependencyId, request)
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return dependency
+        '''
+        '''   
+        @self.router.delete("/dependency/{dependencyId}", summary="Deleting dependency", description="Deleting dependency will also delete the detail and provision.")
+        async def updateDependency(dependencyId: int, response: Response):
+            dependency = self.service.deleteDependency(dependencyId)
+            response.status_code = status.HTTP_200_OK
+            return dependency

@@ -3,3 +3,5 @@ from services.user_detail import UserDetailService
 from services.dependency import DependencyService
 from services.text_template import TextTemplateService
 from services.dependency_detail import DependencyDetailService
+from services.income import IncomeService
+from services.expenses import ExpensesServices

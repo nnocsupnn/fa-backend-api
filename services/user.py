@@ -1,9 +1,10 @@
-from models import User, Occupation, UserDetail
+from models import User, Occupation, UserDetail, Incomes, Expenses, Dependencies, DependencyDetail, DependencyProvision, IncomeProtection, IncomeProtectionProvision
 from json import loads
 from fastapi.exceptions import FastAPIError
 
 from interfaces.json.api_dtos import User as UserJson, UserRegister
 from config.db import SessionLocal as Session
+from sqlalchemy.exc import NoResultFound
 
 class UserService:
     
@@ -11,7 +12,7 @@ class UserService:
         try:
             user = User.get_user(id)
             if (user == None):
-                raise Exception("User not found.")
+                raise NoResultFound("User not found.")
             return user
         except Exception as e:
             raise e
@@ -94,3 +95,30 @@ class UserService:
             
         
         return userModel
+    
+    def deleteUser(id: int):
+        try:
+            with Session() as db:
+                dependencies = db.query(Dependencies).filter(Dependencies.user_id == id).first()
+                dependencDetail = db.query(DependencyDetail).filter(DependencyDetail.id == dependencies.dependency_detail_id).first()
+                
+                db.query(Dependencies).where(Dependencies.user_id == id).delete()
+                db.query(DependencyDetail).where(DependencyDetail.id == dependencies.dependency_detail_id).delete()
+                db.query(DependencyProvision).where(DependencyProvision.id == dependencDetail.dependency_provision_id).delete()
+                
+                incomeProtec = db.query(IncomeProtection).filter(IncomeProtection.user_id == id).first()
+                
+                db.query(IncomeProtectionProvision).where(IncomeProtectionProvision.income_protection_id == incomeProtec.id).delete()
+                db.query(IncomeProtection).where(IncomeProtection.user_id == id).delete()
+                
+                
+                db.query(Incomes).where(Incomes.user_detail_id == id).delete()
+                db.query(Expenses).where(Expenses.user_detail_id == id).delete()
+                db.query(UserDetail).where(UserDetail.user_id == id).delete()
+                db.query(User).where(User.id == id).delete()
+                db.commit()
+                db.close()
+                
+            return True
+        except Exception as e:
+            raise e

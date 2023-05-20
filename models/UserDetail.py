@@ -19,6 +19,11 @@ class UserDetail(Base):
     
     def getUserDetail(id: int):
         db = SessionLocal()
-        result = db.query(UserDetail).options(joinedload(UserDetail.incomes)).options(joinedload(UserDetail.expenses)).filter(UserDetail.user_id == id).first()
+        result = db.query(UserDetail)\
+            .options(joinedload(UserDetail.incomes))\
+            .options(joinedload(UserDetail.expenses))\
+            .filter(UserDetail.user_id == id)\
+            .first()
+            
         db.close()
         return result

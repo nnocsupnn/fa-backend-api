@@ -1,12 +1,11 @@
 import os
 import importlib
 import inspect
-import json
-from fastapi import status
-from fastapi.responses import Response
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from dotenv import dotenv_values
 import re
+from datetime import date, datetime
+
 
 config = dotenv_values(".env")
 
@@ -62,3 +61,39 @@ def make_code_string(input_string):
     code_string = code_string.upper()
 
     return code_string
+
+'''
+Mapping Object
+
+@param source the source of the object
+@param dest the destination of the object
+@return object
+'''
+def mapToObject(source, dest, sub1 = None, sub2 = None) -> any:
+    objectResponse = dest()
+    
+    for field, value in vars(source).items():
+        if type(value) in (int, float, str, bool, list, tuple, dict, date, datetime):
+            if hasattr(objectResponse, field):
+                setattr(objectResponse, field, value)
+        elif sub1 != None:
+            # Level 1
+            sub1Property = sub1()
+            for sub1Field, sub1Value in vars(value).items():
+                if type(sub1Value) in (int, float, str, bool, list, tuple, dict, date, datetime):
+                    if hasattr(sub1Property, sub1Field):
+                        setattr(sub1Property, sub1Field, sub1Value)
+                elif sub2 != None:
+                    # Level 2
+                    sub2Property = sub2()
+                    for sub2Field, sub2Value in vars(sub1Value).items():
+                        if hasattr(sub2Property, sub2Field):
+                            setattr(sub2Property, sub2Field, sub2Value)
+                            
+                    if hasattr(objectResponse, sub1Value):
+                        setattr(objectResponse, sub1Value, sub2Property)
+                        
+            if hasattr(objectResponse, field):
+                setattr(objectResponse, field, sub1Property)
+    
+    return objectResponse

@@ -30,24 +30,20 @@ class TextTemplateAPI(RouteInterface):
     def setup_routes(self):
         @self.router.get("/templates")
         def templates():
-            try:
-                templates = self.service.templates()
-                return templates
-            except Exception as e:
-                return self.default_error_response(str(e))
+            templates = self.service.templates()
+            return templates
             
         @self.router.get("/template/{code}")
         def template(code: str):
-            try:
-                templates = self.service.template(subj=code)
-                return templates
-            except Exception as e:
-                return self.default_error_response(str(e))
+            templates = self.service.template(subj=code)
+            return templates
             
         @self.router.post("/template")
         def template(tt: TextTemplateJson):
-            try:
-                result = self.service.save(tt)
-                return result
-            except Exception as e:
-                return self.default_error_response(str(e))
+            result = self.service.save(tt)
+            return result
+            
+        @self.router.delete("/template", summary="Deleting template", status_code=status.HTTP_204_NO_CONTENT)
+        def template(code: str, response: Response):
+            self.service.delete(code)
+            response.status_code = status.HTTP_204_NO_CONTENT

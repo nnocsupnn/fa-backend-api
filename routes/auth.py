@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Depends, status
 from models import User
 from interfaces.route_interface import RouteInterface
-from interfaces.json.api_dtos import AuthenticationJson
+from interfaces.json import AuthenticationJson, JwtResponseJson
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
 from datetime import timedelta, datetime
@@ -30,65 +30,60 @@ class AuthAPI(RouteInterface):
         return refresh_token
 
     def setup_routes(self):
-        @self.router.post("/jwt/auth")
-        async def login(credential: AuthenticationJson, response: Response, auth: AuthJWT = Depends()) -> JSONResponse:
-            try:
-                payload = credential.json()
+        @self.router.post("/jwt/auth", summary="Get JWT Auth", description="Credentials are from your email and registered password.", status_code=status.HTTP_201_CREATED, response_description="Successfully logged in.")
+        async def login(credential: AuthenticationJson, response: Response, auth: AuthJWT = Depends()) -> JwtResponseJson:
+            payload = credential.json()
                 
-                # Credential
-                email = getattr(credential, "username")
-                password = getattr(credential, "password")
-                grant_type = getattr(credential, "grant_type")
+            # Credential
+            email = getattr(credential, "username")
+            password = getattr(credential, "password")
+            grant_type = getattr(credential, "grant_type")
+            
+            # Getting User
+            user = None
+            with self.session() as db:
+                user = db.query(User).filter(User.email_address == email).first()
+                db.close()
+            
+            # Validations
+            if user != None and not user.check_password(password=password) or user == None:
+                raise Exception("Invalid credential")
                 
-                # Getting User
-                user = None
-                with self.session() as db:
-                    user = db.query(User).filter(User.email_address == email).first()
-                    db.close()
+            if user.active == 0:
+                raise Exception(f"User '{user.email_address}' is not activated. Please contact admin.")
+            
+            if grant_type == "password":
+                expireDelta = timedelta(minutes=15)
+                epochSeconds = (datetime.now() + expireDelta).timestamp()
+                # access_token = auth.create_access_token(subject=user.id, expires_time=expireDelta)
+                access_token = self.generate_access_token(user.id, auth=auth)
+                refresh_token = self.generate_refresh_token(user.id, auth=auth)
                 
-                # Validations
-                if user != None and not user.check_password(password=password) or user == None:
-                    raise Exception("Invalid credential")
+                token = JwtResponseJson(
+                    accessToken=access_token,
+                    refreshToken=refresh_token,
+                    expires=int(epochSeconds)
+                )
+                
+                response.status_code = status.HTTP_201_CREATED
+                return token
+            elif grant_type == "refresh":
+                try:
+                    auth.jwt_required()
+                    userId = auth.get_jwt_subject()
                     
-                if user.active == 0:
-                    raise Exception(f"User '{user.email_address}' is not activated. Please contact admin.")
-                
-                if grant_type == "password":
+                    access_token = self.generate_access_token(userId, auth=auth)
+                    refresh_token = self.generate_refresh_token(userId, auth=auth)
+                    
                     expireDelta = timedelta(minutes=15)
                     epochSeconds = (datetime.now() + expireDelta).timestamp()
-                    # access_token = auth.create_access_token(subject=user.id, expires_time=expireDelta)
-                    access_token = self.generate_access_token(user.id, auth=auth)
-                    refresh_token = self.generate_refresh_token(user.id, auth=auth)
                     
                     return JSONResponse(
                         status_code=status.HTTP_201_CREATED,
                         content={ "accessToken": access_token, "refreshToken": refresh_token, "expires": int(epochSeconds) }
                     )
-                elif grant_type == "refresh":
-                    try:
-                        auth.jwt_required()
-                        userId = auth.get_jwt_subject()
-                        
-                        access_token = self.generate_access_token(userId, auth=auth)
-                        refresh_token = self.generate_refresh_token(userId, auth=auth)
-                        
-                        expireDelta = timedelta(minutes=15)
-                        epochSeconds = (datetime.now() + expireDelta).timestamp()
-                        
-                        return JSONResponse(
-                            status_code=status.HTTP_201_CREATED,
-                            content={ "accessToken": access_token, "refreshToken": refresh_token, "expires": int(epochSeconds) }
-                        )
-                    except Exception as e:
-                        print(str(e))
-                        raise Exception("Invalid authentication credentials")
-                else:
-                    raise Exception("Invalid grant_type")
-            except Exception as e:
-                return JSONResponse(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    content={
-                        "status": status.HTTP_401_UNAUTHORIZED,
-                        "message": str(e)
-                    }
-                )
+                except Exception as e:
+                    print(str(e))
+                    raise Exception("Invalid authentication credentials")
+            else:
+                raise Exception("Invalid grant_type")

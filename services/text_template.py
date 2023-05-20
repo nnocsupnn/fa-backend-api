@@ -30,3 +30,18 @@ class TextTemplateService:
         
         db.commit()
         db.close()
+        
+    def delete(code: str):
+        db = Session()
+        
+        try:
+        
+            result = db.query(TextTemplate).where(TextTemplate.code == code).delete()
+            
+            db.commit()
+            db.close()
+            return result
+        except Exception as e:
+            db.close()
+            raise e
+            

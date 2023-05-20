@@ -5,3 +5,5 @@ from routes.user_detail import UserDetailAPI
 from routes.dependency import DepdenciesAPI
 from routes.text_template import TextTemplateAPI
 from routes.dependency_detail import DepdencyDetailAPI
+from routes.income import IncomeAPI
+from routes.expenses import ExpensesAPI

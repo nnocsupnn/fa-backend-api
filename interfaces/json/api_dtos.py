@@ -64,19 +64,32 @@ class DependencyDetailPostJson(BaseModel):
     tertiary_lvl_years: int
     tuition_fee_incr_perc: int
     dependency_provision: Optional[DependencyProvision] = None
+
+class ExpensePatchJson(BaseModel):
+    expense_amount: Optional[float] = None
+    description: Optional[str] = None
+    expense_started_date: Optional[date] = None
+    expense_end_date: Optional[date] = None
+    expense_category: Optional[str] = None
+    active: Optional[int] = None
     
 class Expenses(BaseModel):
     user_detail_id: int
     expense_amount: float
-    expense_type: str
     description: str
     expense_started_date: date
     expense_end_date: date
     
+    
+class IncomePatchJson(BaseModel):
+    income_amount: Optional[float] = None
+    description: Optional[str] = None
+    income_started_date: Optional[date] = None
+    income_end_date: Optional[date] = None
+    
 class Income(BaseModel):
     user_detail_id: int
     income_amount: float
-    income_type: str
     description: str
     income_started_date: date
     income_end_date: date
@@ -142,13 +155,3 @@ class DependenciesPostJson(BaseModel):
     relationship: Relationship
     date_of_birth: date
     
-# Auth
-
-class GrantType(str, Enum):
-    password = "password"
-    refresh = "refresh"
-    
-class AuthenticationJson(BaseModel):
-    username: str
-    password: str
-    grant_type: GrantType

@@ -1,4 +1,4 @@
-from models import User, Dependencies
+from models import User, Dependencies, DependencyDetail, DependencyProvision
 from json import loads
 from fastapi.exceptions import FastAPIError
 
@@ -48,3 +48,27 @@ class DependencyService:
         db.close()
         
         return dep
+    
+    
+    def deleteDependency(dependencyId: int):
+        db = Session()
+        dep = db.query(Dependencies).filter(Dependencies.id == dependencyId).first()
+        
+        depDetail = db.query(DependencyDetail).filter(DependencyDetail.id == dep.dependency_detail_id).first()
+        
+        result = 0
+        # Delete from child to parent
+        if dep != None:
+            result += db.query(Dependencies).where(Dependencies.id == dependencyId).delete()
+            
+        if depDetail != None and depDetail.dependency_provision_id != None:
+            result += db.query(DependencyDetail).where(DependencyDetail.id == dep.dependency_detail_id).delete()
+            
+        if depDetail != None and depDetail.dependency_provision_id != None:
+            result = db.query(DependencyProvision).where(DependencyProvision.id == depDetail.dependency_provision_id).delete()
+        
+        
+        db.commit()
+        db.close()
+        
+        return result
