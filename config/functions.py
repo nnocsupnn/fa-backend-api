@@ -5,6 +5,7 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 from dotenv import dotenv_values
 import re
 from datetime import date, datetime
+from decimal import Decimal
 
 
 config = dotenv_values(".env")
@@ -73,27 +74,74 @@ def mapToObject(source, dest, sub1 = None, sub2 = None) -> any:
     objectResponse = dest()
     
     for field, value in vars(source).items():
-        if type(value) in (int, float, str, bool, list, tuple, dict, date, datetime):
+        if str(field).startswith("_sa_instance"):
+            continue
+        
+        if type(value) in (int, float, str, bool, list, tuple, dict, date, datetime, Decimal):
             if hasattr(objectResponse, field):
                 setattr(objectResponse, field, value)
         elif sub1 != None:
             # Level 1
             sub1Property = sub1()
             for sub1Field, sub1Value in vars(value).items():
-                if type(sub1Value) in (int, float, str, bool, list, tuple, dict, date, datetime):
+                if str(sub1Field).startswith("_sa_instance"):
+                    continue
+            
+                if type(sub1Value) in (int, float, str, bool, list, tuple, dict, date, datetime, Decimal):
                     if hasattr(sub1Property, sub1Field):
                         setattr(sub1Property, sub1Field, sub1Value)
                 elif sub2 != None:
                     # Level 2
                     sub2Property = sub2()
-                    for sub2Field, sub2Value in vars(sub1Value).items():
+                    for sub2Field, sub2Value in vars(getattr(getattr(source, field), sub1Field)).items():
+                        if str(sub2Field).startswith("_sa_instance"):
+                            continue
+                        
                         if hasattr(sub2Property, sub2Field):
                             setattr(sub2Property, sub2Field, sub2Value)
-                            
-                    if hasattr(objectResponse, sub1Value):
-                        setattr(objectResponse, sub1Value, sub2Property)
+
+                    if hasattr(sub1Property, sub1Field):
+                        setattr(sub1Property, sub1Field, sub2Property)
                         
             if hasattr(objectResponse, field):
                 setattr(objectResponse, field, sub1Property)
     
     return objectResponse
+
+
+def assignObject(obj, fieldToFind, value):
+    if fieldToFind == None:
+        return obj
+    
+    for f, v in obj.__dict__.items():
+        if f == fieldToFind:
+            setattr(obj, fieldToFind, value)
+        elif hasattr(v, fieldToFind):
+            return assignObject(v, fieldToFind, value)
+        
+    return obj
+
+def mapToObjectA(source, dest, objects, current = None, fields = []) -> any:
+    assigningObject = dest
+            
+    for field, value in vars(source).items():
+        if str(field).startswith("_sa_instance"):
+            continue
+        
+        if type(value) in (int, float, str, bool, list, tuple, dict, date, datetime, Decimal):
+            if hasattr(assigningObject, field):
+                setattr(assigningObject, field, value)
+                
+                # objectResponse = assignObject(current, field, objectResponse)
+        elif field in objects:
+            # current = assignObject(current, field, objectResponse)
+            for f in fields:
+                current = assignObject(current, f, assigningObject)
+                print("\n\n", current)
+                        
+            fields.append(field)
+            return mapToObjectA(value, objects[field], objects, current, fields)
+        
+    
+    return current
+    

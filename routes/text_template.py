@@ -5,11 +5,11 @@ from fastapi.responses import JSONResponse
 from models import User
 from sqlalchemy.orm import joinedload
 from interfaces.route_interface import RouteInterface
-from interfaces.json.api_dtos import TextTemplate as TextTemplateJson
+from interfaces.json import TextTemplate as TextTemplateJson, TextTemplatesResponseJson
 from services import TextTemplateService
-from config.functions import serialize_model
+from config.functions import serialize_model, mapToObject
 from fastapi_jwt_auth import AuthJWT
-import jwt
+from typing import List 
 '''
 UserAPI is class for User Resource
 
@@ -29,14 +29,17 @@ class TextTemplateAPI(RouteInterface):
         
     def setup_routes(self):
         @self.router.get("/templates")
-        def templates():
+        def templates() -> List[TextTemplatesResponseJson]:
             templates = self.service.templates()
-            return templates
+            res = [mapToObject(val, TextTemplatesResponseJson) for val in templates]
+            
+            return res
             
         @self.router.get("/template/{code}")
-        def template(code: str):
-            templates = self.service.template(subj=code)
-            return templates
+        def template(code: str) -> TextTemplatesResponseJson:
+            template = self.service.template(subj=code)
+            res = mapToObject(template, TextTemplatesResponseJson)
+            return res
             
         @self.router.post("/template")
         def template(tt: TextTemplateJson):

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from datetime import date
+from datetime import date, datetime
 from enum import Enum
 from typing import Optional, List
 
@@ -9,12 +9,12 @@ class IncomeResponseJson(BaseModel):
     id: Optional[int] = None
     description: Optional[str] = None
     income_end_date: Optional[date] = None
-    created_date: Optional[date] = None
+    created_date: Optional[datetime] = None
     income_amount: Optional[float] = None
     user_detail_id: Optional[int] = None
     income_started_date: Optional[date] = None
     active: Optional[int] = None
-    updated_date: Optional[date] = None
+    updated_date: Optional[datetime] = None
 
 # Expenses
 class ExpenseResponseJson(BaseModel):
@@ -22,30 +22,30 @@ class ExpenseResponseJson(BaseModel):
     id: Optional[int] = None
     expense_started_date: Optional[date] = None
     active: Optional[int] = None
-    updated_date: Optional[date] = None
+    updated_date: Optional[datetime] = None
     user_detail_id: Optional[int] = None
     expense_amount: Optional[float] = None
     description: Optional[str] = None
     expense_end_date: Optional[date] = None
-    created_date: Optional[date] = None
+    created_date: Optional[datetime] = None
     
 # Dependencies
 class DependenciesResponseJson(BaseModel):
     id: Optional[int] = None
     gender: Optional[str] = None
     date_of_birth: Optional[date] = None
-    created_date: Optional[date] = None
+    created_date: Optional[datetime] = None
     name: Optional[str] = None
     user_id: Optional[int] = None
     relationship: Optional[str] = None
     dependency_detail_id: Optional[int] = None
-    updated_date: Optional[date] = None
+    updated_date: Optional[datetime] = None
     
 class DependencyProvisionResponseJson(BaseModel):
     id: Optional[str] = None
-    created_date: Optional[date] = None
+    created_date: Optional[datetime] = None
     amount: Optional[float] = None
-    updated_date: Optional[date] = None
+    updated_date: Optional[datetime] = None
     
 class DependencyDetailResponseJson(BaseModel):
     id: Optional[int] = None
@@ -55,14 +55,70 @@ class DependencyDetailResponseJson(BaseModel):
     tertiary_lvl_annual: Optional[float] = None
     secondary_lvl_years: Optional[int] = None
     tuition_fee_incr_perc: Optional[float] = None
-    updated_date: Optional[date] = None
+    updated_date: Optional[datetime] = None
     age_before_entry: Optional[int] = None
     secondary_lvl_annual: Optional[float] = None
     primary_lvl_years: Optional[int] = None
     tertiary_lvl_years: Optional[int] = None
-    created_date: Optional[date] = None
+    created_date: Optional[datetime] = None
     dependency_provision: Optional[DependencyProvisionResponseJson] = None
     
+class DependenciesResponseJsonFull(BaseModel):
+    id: Optional[int] = None
+    gender: Optional[str] = None
+    date_of_birth: Optional[date] = None
+    created_date: Optional[datetime] = None
+    name: Optional[str] = None
+    user_id: Optional[int] = None
+    relationship: Optional[str] = None
+    dependency_detail_id: Optional[int] = None
+    updated_date: Optional[datetime] = None
+    dependency_detail: Optional[DependencyDetailResponseJson] = None
+# User Detail
+
+class ExpenseResponseJson(BaseModel):
+    expense_category: Optional[str] = None
+    id: Optional[int] = None
+    expense_started_date: Optional[date] = None
+    active: Optional[int] = None
+    updated_date: Optional[datetime] = None
+    user_detail_id: Optional[int] = None
+    expense_amount: Optional[float] = None
+    description: Optional[str] = None
+    expense_end_date: Optional[date] = None
+    created_date: Optional[datetime] = None
+
+class IncomeResponseJson(BaseModel):
+    description: Optional[str] = None
+    id: Optional[int] = None
+    income_end_date: Optional[date] = None
+    created_date: Optional[datetime] = None
+    user_detail_id: Optional[int] = None
+    income_amount: Optional[float] = None
+    income_started_date: Optional[date] = None
+    active: Optional[int] = None
+    updated_date: Optional[datetime] = None
+
+class UserDetailResponseJson(BaseModel):
+    user_id: Optional[int] = None
+    year_business: Optional[int] = None
+    retirement_package: Optional[float] = None
+    id: Optional[int] = None
+    retirement_age: Optional[int] = None
+    life_expectancy: Optional[int] = None
+    expenses: Optional[List[ExpenseResponseJson]] = []
+    incomes: Optional[List[IncomeResponseJson]] = []
+    
+    
+# Templates
+class TextTemplatesResponseJson(BaseModel):
+    code: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    updated_date: Optional[datetime] = None
+    created_date: Optional[datetime] = None
+    id: Optional[int] = None
+
 # Auth
 
 class GrantType(str, Enum):

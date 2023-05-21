@@ -2,10 +2,11 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 from fastapi import APIRouter, Response, status, Depends
 from fastapi.responses import JSONResponse
 from interfaces.route_interface import RouteInterface
-from interfaces.json.api_dtos import Dependencies as DependenciesJson, DependenciesPostJson
+from interfaces.json import Dependencies as DependenciesJson, DependenciesPostJson, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson
 from services import DependencyService
 from models import Dependencies, User
 from fastapi_jwt_auth import AuthJWT
+from config.functions import mapToObject, mapToObjectA
 
 class DepdenciesAPI(RouteInterface):
     def __init__(self, session):
@@ -19,13 +20,20 @@ class DepdenciesAPI(RouteInterface):
         
     def setup_routes(self):
         @self.router.get("/dependency/{dependencyId}", summary="Getting dependency")
-        async def getDependencies(dependencyId: int, response: Response):
+        async def getDependencies(dependencyId: int, response: Response) -> DependenciesResponseJsonFull:
             try:
                 dependency = Dependencies.getDependency(dependencyId)
                 response.status_code = status.HTTP_200_OK
                 if dependency == None:
                     raise NoResultFound(f"Dependency with ID {dependencyId} not found.")
-                return dependency
+
+                # res = mapToObjectA(dependency, DependenciesResponseJsonFull(), {
+                #     "dependency_detail": DependencyDetailResponseJson(), 
+                #     "dependency_provision": DependencyProvisionResponseJson()
+                # }, DependenciesResponseJsonFull())
+                
+                res = mapToObject(dependency, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson)
+                return res
             except NoResultFound as e:
                 return JSONResponse(
                     status_code=status.HTTP_404_NOT_FOUND,
