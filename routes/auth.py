@@ -30,7 +30,7 @@ class AuthAPI(RouteInterface):
         return refresh_token
 
     def setup_routes(self):
-        @self.router.post("/jwt/auth", summary="Get JWT Auth", description="Credentials are from your email and registered password.", status_code=status.HTTP_201_CREATED, response_description="Successfully logged in.")
+        @self.router.post("/jwt/auth", summary="Get JWT Auth", description="Credentials are from your email and registered password.\nFor `refresh token`. Please see the readme instructions.", status_code=status.HTTP_201_CREATED, response_description="Successfully logged in.")
         async def login(credential: AuthenticationJson, response: Response, auth: AuthJWT = Depends()) -> JwtResponseJson:
             payload = credential.json()
                 

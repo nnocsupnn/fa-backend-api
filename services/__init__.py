@@ -6,3 +6,5 @@ from services.dependency_detail import DependencyDetailService
 from services.income import IncomeService
 from services.expenses import ExpensesServices
 from services.income_protection import IncomeProtectionService
+from services.lifestyle_protection import LifestyleProtectionService
+from services.wealth import WealthService

@@ -27,6 +27,7 @@ class User(Base):
     dependencies = relationship("Dependencies", back_populates=__tablename__, cascade="all", lazy="joined")
     income_protection = relationship("IncomeProtection", back_populates=__tablename__, cascade="all", lazy="joined")
     lifestyle_protection = relationship("LifestyleProtection", back_populates=__tablename__, cascade="all", lazy="joined")
+    lifestyle_protection_investments = relationship("LifestyleProtectionInvestments", back_populates=__tablename__, cascade="all", lazy="joined")
 
     @staticmethod
     def get_user(user_id: int):

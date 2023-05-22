@@ -157,8 +157,6 @@ class TestAPI(RouteInterface):
                     # Income Pro
                     income_pro = IncomeProtection(
                         user_id=user.id,
-                        income_amount=125000,
-                        date_started=datetime.date(2021, 2, 22)
                     )
                     
                     db.add(income_pro)
@@ -177,4 +175,4 @@ class TestAPI(RouteInterface):
                     db.rollback()
                     db.close()
             
-            return SuccessResponseJson(200, "Done")
+            return SuccessResponseJson(code=200, message="Done")

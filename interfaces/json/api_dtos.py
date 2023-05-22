@@ -141,7 +141,6 @@ class User(BaseModel):
     user_detail: Optional[UserDetail] = None
     user_level: Optional[str] = None
     active: Optional[int] = None
-    is_locked: Optional[int] = None
     
 class Dependencies(BaseModel):
     name: Optional[str] = None

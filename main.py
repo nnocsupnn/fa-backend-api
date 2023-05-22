@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi.responses import RedirectResponse
 from fastapi.exceptions import HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from config.db import Base, SessionLocal, engine
@@ -18,6 +19,15 @@ app = FastAPI(
     redoc_url="/api/docs"
 )
 
+'''
+CORS
+'''
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET", "POST", "DELETE", "PATCH", "PUT"],
+    allow_headers=["*"]
+)
 '''
 Security Implementation
 '''
@@ -39,7 +49,9 @@ resource = [
     DepdencyDetailAPI,
     IncomeAPI,
     ExpensesAPI,
-    IncomeProtectionAPI
+    IncomeProtectionAPI,
+    LifestyleProtectionAPI,
+    WealthAPI
 ]
 
 '''
@@ -56,6 +68,7 @@ Run all API Classes to registered to our router
 for instance in resource:
     app.add_exception_handler(Exception, ex_fa_exception_handler)
     app.add_exception_handler(NoResultFound, fa_exception_handler)
+    app.add_exception_handler(IntegrityError, fa_exception_handler)
     
     app.include_router(instance(SessionLocal).router, dependencies=[Depends(authSecurity.auth_user)], prefix="/fa/api", tags=[instance.__name__])
 

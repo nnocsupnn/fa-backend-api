@@ -70,7 +70,7 @@ class UserService:
                 if field_name in propertiesFromJoin:
                     
                     if field_name == "marital" and user.marital != None:
-                        setattr(userModel.marital, field_name, user.marital.value)
+                        setattr(userModel, field_name, user.marital.value)
                         
                     if field_name == "user_detail" and user.user_detail != None:
                         for deail_field_nae, deail_field_type in user.user_detail.__annotations__.items():

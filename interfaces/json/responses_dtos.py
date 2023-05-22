@@ -16,14 +16,24 @@ class IncomeResponseJson(BaseModel):
     active: Optional[int] = None
     updated_date: Optional[datetime] = None
 
+
+class IncomeProtectionProvisionResponseJson(BaseModel):
+    id: Optional[int] = None
+    income_protection_id: Optional[int] = None
+    amount: Optional[float] = None
+    created_date: Optional[datetime] = None
+    updated_date: Optional[datetime] = None
+    
 class IncomeProtectionResponseJson(BaseModel):
     user_id: Optional[int] = None
-    income_amount: Optional[float] = None
     created_date: Optional[datetime] = None
     id: Optional[int] = None
     date_started: Optional[date] = None
     updated_date: Optional[datetime] = None
+    income_protection_provision: List[IncomeProtectionProvisionResponseJson] = None
     
+
+     
 # Expenses
 class ExpenseResponseJson(BaseModel):
     expense_category: Optional[str] = None

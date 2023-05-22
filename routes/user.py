@@ -30,37 +30,47 @@ class UserAPI(RouteInterface):
     
     def setup_routes(self):
         # Route Methodss
+        @self.router.patch("/user/me", summary="Update current user")
+        async def updateUser(request: UserJson, response: Response, auth: AuthJWT = Depends()):
+            userId = auth.get_jwt_subject()
+            print(userId)
+            user = self.service.updateUser(userId, request)
+            response.status_code = status.HTTP_200_OK
+            return user
         
-        @self.router.get("/user/me")
+        @self.router.get("/user/me", summary="Get current user")
         async def me(auth: AuthJWT = Depends()):
             userId = auth.get_jwt_subject()
             user = User.get_user(user_id=userId)
             
             return user
         
-        @self.router.get("/users")
+        @self.router.get("/users", summary="Get all users", description="Note: this route is for `admin` role user.")
         async def getUsers(auth: AuthJWT = Depends()):
             userId = auth.get_jwt_subject()
             user = User.get_user(user_id=userId)
             
-            # if not user.user_level.__eq__("admin"):
-            #     raise Exception("You are not allowed on this path.")
+            if not user.user_level.__eq__("admin"):
+                raise Exception("You are not allowed on this path.")
             
             users = User.get_users()
             return users
         
         
-        @self.router.get("/user/{id}")
+        @self.router.get("/user/{id}", summary="Get user", description="Note: this route is for `admin` role user.")
         async def getUser(id: int, response: Response) -> JSONResponse:
             user = self.service.getUser(id)
                
+            if not user.user_level.__eq__("admin"):
+                raise Exception("You are not allowed on this path.")
+            
             response.status_code = status.HTTP_200_OK
             '''
             Get user
             '''
             return user
                 
-        @self.router.post("/user", status_code=status.HTTP_201_CREATED)
+        @self.router.post("/user", status_code=status.HTTP_201_CREATED, summary="Register user")
         async def AddUser(request: UserRegister, response: Response):
             try:
                 self.service.user(request)
@@ -78,7 +88,7 @@ class UserAPI(RouteInterface):
                     content=self.default_error_response(str(e.__cause__))
                 )
                 
-        @self.router.patch("/user/{id}")
+        @self.router.patch("/user/{id}", summary="Update user")
         async def updateUser(id: int, request: UserJson, response: Response):
             user = self.service.updateUser(id, request)
             response.status_code = status.HTTP_200_OK
