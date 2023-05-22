@@ -18,13 +18,17 @@ pip install -r dependency.txt
 python main.py
 ```
 
-## Populating test data
+> You can set specific port by adding `--port` argument in cli.
 
-Send Request ot this resource to populate test data. (Trigger only once)
-
-```markdown
-GET /populate
+```bash
+python main.py --port 3000
 ```
+
+## Once application is running, visit API Docs.
+
+> localhost/api/docs
+
+<br/>
 
 ## Docker
 
@@ -36,5 +40,3 @@ docker run -d --name phpmyadmin --network=localdockernetwork -e PMA_HOST=mysql -
 # Run mysql
 docker run --name mysql --network=localdockernetwork --env=MYSQL_ALLOW_EMPTY_PASSWORD=yes -p 3306:3306 -d mysql
 ```
-
-> visit localhost:8080

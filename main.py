@@ -8,10 +8,29 @@ from config.db import Base, SessionLocal, engine
 from config.functions import nullCheckingResponse
 from config.exception_handlers import fa_exception_handler, ex_fa_exception_handler
 from routes import *
-from security.jwt_auth import AuthSecurity
+from security import AuthSecurity
+from services import TextTemplateService as Templates
+from argparse import ArgumentParser
 
 # Intialize db (DDL)
 Base.metadata.create_all(engine, checkfirst=True)
+
+'''
+Arguments
+'''
+parser = ArgumentParser()
+parser.add_argument("--port", type=int, default=80, help="Set port number.")
+parser.add_argument("--prepopulate", type=bool, default=False, help="Set true if you want to prepopulate data. (defaults)")
+args = parser.parse_args()
+
+
+'''
+Argument Configs
+'''
+PORT = args.port
+if args.prepopulate:
+    Templates.prepopulateTemplates()
+
     
 app = FastAPI(
     title="Financial Analysis API",
@@ -28,6 +47,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "DELETE", "PATCH", "PUT"],
     allow_headers=["*"]
 )
+
 '''
 Security Implementation
 '''
@@ -60,10 +80,11 @@ just to not include the auth module
 '''
 app.include_router(TestAPI(SessionLocal).router, tags=["maintenance"])
 app.include_router(AuthAPI(SessionLocal).router, tags=["AuthenticationAPI"])
+app.include_router(RegistrationAPI(SessionLocal).router, tags=["RegistrationAPI"], prefix="/fa/api")
 
 
 '''
-Run all API Classes to registered to our router
+Run all API Classes to registered to our main router
 '''
 for instance in resource:
     app.add_exception_handler(Exception, ex_fa_exception_handler)
@@ -75,4 +96,4 @@ for instance in resource:
 
 # Start Server
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=80, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=PORT, reload=True)

@@ -109,9 +109,9 @@ class TextTemplate(BaseModel):
     category: TextTemplateCategory
     
 class Occupation(BaseModel):
-    description: str
-    rank: str
-    industry: str
+    description: Optional[str] = None
+    rank: Optional[str] = None
+    industry: Optional[str] = None
 
 class UserDetail(BaseModel):
     year_business: Optional[int] = None
@@ -128,6 +128,7 @@ class UserRegister(BaseModel):
     marital: Optional[Marital] = None
     occupation: Optional[Occupation] = None
     user_detail: Optional[UserDetail] = None
+    gender: Gender
     password: str = Field(alias="password", min_length=8, regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$")
     
 class User(BaseModel):

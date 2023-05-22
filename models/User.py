@@ -12,6 +12,7 @@ class User(Base):
     first_name = Column(String(35), index=True, nullable=False)
     last_name = Column(String(35), index=True)
     middle_name = Column(String(35), index=True)
+    gender = Column(Enum("male", "female"), index=True, nullable=False)
     email_address = Column(String(50), unique=True, index=True, nullable=False)
     password = Column(String(255), nullable=False)
     active = Column(Boolean, index=True, default=False)

@@ -11,7 +11,7 @@ class TestAPI(RouteInterface):
         self.router = APIRouter()
         self.setup_routes()
         
-    def setup_routes(self):
+    def setup_routes(self):  
         @self.router.get("/populate", summary="Populating test data", description="This route is used for testing only.")
         async def populate() -> SuccessResponseJson:
             with SessionLocal() as db:
@@ -47,6 +47,7 @@ class TestAPI(RouteInterface):
                         password="user12345",
                         date_of_birth=datetime.date(1996, 1, 21),
                         marital="married",
+                        gender="male",
                         active=1, # activate
                         occupation_id=occ.id
                     )
@@ -168,6 +169,24 @@ class TestAPI(RouteInterface):
                     )
                     
                     db.add(income_pro_prov)
+                    
+                    # Lifestyle
+                    lifestyle_protection = LifestyleProtection(
+                        user_id=user.id,
+                        existing_provision=100000,
+                        source_fund=250000,
+                        gov_fund=50000,
+                        other_fund=0
+                    )
+                    
+                    lifestyleInvestment = LifestyleProtectionInvestments(
+                        user_id=user.id,
+                        age=52,
+                        annual_investment=120000,
+                        projection_rate=5.0
+                    )
+                    
+                    db.add_all([lifestyle_protection, lifestyleInvestment])
                     
                     db.commit()
                     db.close()

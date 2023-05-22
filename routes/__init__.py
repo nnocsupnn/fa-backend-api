@@ -1,3 +1,4 @@
+from routes.registration import RegistrationAPI
 from routes.user import UserAPI
 from routes.auth import AuthAPI
 from routes.maintenance_route import TestAPI

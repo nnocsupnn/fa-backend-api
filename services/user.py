@@ -1,4 +1,15 @@
-from models import User, Occupation, UserDetail, Incomes, Expenses, Dependencies, DependencyDetail, DependencyProvision, IncomeProtection, IncomeProtectionProvision
+from models import User, \
+    Occupation, \
+    UserDetail, \
+    Incomes, \
+    Expenses, \
+    Dependencies, \
+    DependencyDetail, \
+    DependencyProvision, \
+    IncomeProtection, \
+    IncomeProtectionProvision, \
+    LifestyleProtection, \
+    LifestyleProtectionInvestments
 from json import loads
 from fastapi.exceptions import FastAPIError
 
@@ -21,14 +32,15 @@ class UserService:
     def user(user: UserRegister):
         # Process data below
         with Session() as db:
-            occupation = Occupation(
-                description=user.occupation.description,
-                rank=user.occupation.rank,
-                industry=user.occupation.industry
-            )
-            
-            db.add(occupation)
-            db.commit()
+            if user.occupation != None:
+                occupation = Occupation(
+                    description=user.occupation.description,
+                    rank=user.occupation.rank,
+                    industry=user.occupation.industry
+                )
+                
+                db.add(occupation)
+                db.commit()
             
             userModel = User(
                 first_name=user.first_name,
@@ -37,12 +49,31 @@ class UserService:
                 marital=user.marital,
                 date_of_birth=user.date_of_birth,
                 email_address=user.email_address,
-                occupation_id=occupation.id,
-                password=user.password
+                occupation_id=occupation.id if user.occupation != None else None,
+                password=user.password,
+                gender=user.gender
             )
             
             db.add(userModel)
             db.commit()
+            
+            # Populate single data per user
+            incomeProtection = IncomeProtection(user_id=userModel.id)
+            db.commit()
+            incomeProtectionProvision = IncomeProtectionProvision(income_protection_id=incomeProtection.id)
+            
+            db.add(incomeProtectionProvision)
+            
+            # Lifestyle
+            lifestyle_protection = LifestyleProtection(
+                user_id=userModel.id,
+                existing_provision=0,
+                source_fund=0,
+                gov_fund=0,
+                other_fund=0
+            )
+            
+            db.add(lifestyle_protection)
             
             if user.user_detail != None:
                 userDetail = UserDetail(
@@ -51,6 +82,16 @@ class UserService:
                     retirement_age=user.user_detail.retirement_age,
                     retirement_package=user.user_detail.retirement_package,
                     life_expectancy=user.user_detail.life_expectancy
+                )
+                
+                db.add(userDetail)
+            else:
+                userDetail = UserDetail(
+                    user_id=userModel.id,
+                    year_business=1990,
+                    retirement_age=65,
+                    retirement_package=0,
+                    life_expectancy=0
                 )
                 
                 db.add(userDetail)

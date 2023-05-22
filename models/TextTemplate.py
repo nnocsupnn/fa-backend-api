@@ -9,7 +9,7 @@ class TextTemplate(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     code = Column(String(30), index=True, unique=True)
-    description = Column(String(50), index=True)
+    description = Column(String(50), index=True, unique=True)
     category = Column(String(50), index=True, nullable=False)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())

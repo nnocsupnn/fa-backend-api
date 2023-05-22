@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from models import LifestyleProtection, LifestyleProtectionInvestments
 from sqlalchemy.orm import joinedload
 from interfaces.route_interface import RouteInterface
-from interfaces.json import IncomeProtectionProvisionPostJson
+from interfaces.json import LifestyleProtectionPatchJson
 from services import LifestyleProtectionService
 from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
@@ -31,5 +31,17 @@ class LifestyleProtectionAPI(RouteInterface):
     
     def setup_routes(self):
         @self.router.get("/lifestyle-protection", summary="Get lifestyle protection")
-        async def getLifestyleProtection():
-            pass
+        async def getLifestyleProtection(response: Response, auth: AuthJWT = Depends()):
+            auth.jwt_required()
+            
+            userId = auth.get_jwt_subject()
+            
+            return self.service.getProtections(userId)
+        
+        @self.router.patch("/lifestyle-protection", summary="Update lifestyle protection")
+        async def updateLifestyleProtection(request: LifestyleProtectionPatchJson, response: Response, auth: AuthJWT = Depends()):
+            auth.jwt_required()
+            
+            userId = auth.get_jwt_subject()
+            
+            return self.service.update(userId)

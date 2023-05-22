@@ -15,3 +15,9 @@ class IncomeProtectionProvisionPatchJson(BaseModel):
     
 class IncomeProtectionPatchJson(BaseModel):
     date_started: date
+    
+class LifestyleProtectionPatchJson(BaseModel):
+    existing_provision: Optional[float] = None
+    source_fund: Optional[float] = None
+    gov_fund: Optional[float] = None
+    other_fund: Optional[float] = None

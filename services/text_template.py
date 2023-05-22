@@ -8,6 +8,59 @@ from interfaces.json.api_dtos import TextTemplate
 from config.db import SessionLocal as Session
 
 class TextTemplateService:
+    def prepopulateTemplates():
+        # TODO: Prepopulate templates
+        ranks = [
+            "IT Technician",
+            "Help Desk/Support Analyst",
+            "Network Support Specialist",
+            "Data Entry Operator",
+            "Hardware Technician",
+            "Application Support Analyst",
+            "Systems Administrator",
+            "Network Administrator",
+            "Database Administrator",
+            "Security Analyst/Engineer",
+            "Software Developer/Engineer",
+            "Business Analyst",
+            "IT Project Manager",
+            "IT Manager",
+            "IT Director",
+            "Chief Technology Officer (CTO)",
+            "Chief Information Officer (CIO)"
+        ]
+        
+        industries = ["IT"]
+        
+        with Session() as db:
+            try:
+                for rank in ranks:
+                    r = TT(
+                    code=make_code_string(rank),
+                    description=rank,
+                    category="rank"
+                )
+                
+                db.add(r)
+                db.commit()
+                
+            
+                for industry in industries:
+                    i = TT(
+                        code=make_code_string(industry),
+                        description=industry,
+                        category="industry"
+                    )
+                    
+                    db.add(i)
+                    db.commit()
+                    
+                db.close()
+            except Exception:
+                db.rollback()
+                
+        return True
+    
     def templates():
         return TT.getTemplates()
     
@@ -41,7 +94,6 @@ class TextTemplateService:
         db = Session()
         
         try:
-        
             result = db.query(TT).where(TT.code == code).first()
             if result != None:
                 db.query(TT).where(TT.code == code).delete()

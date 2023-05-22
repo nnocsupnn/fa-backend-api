@@ -70,23 +70,7 @@ class UserAPI(RouteInterface):
             '''
             return user
                 
-        @self.router.post("/user", status_code=status.HTTP_201_CREATED, summary="Register user")
-        async def AddUser(request: UserRegister, response: Response):
-            try:
-                self.service.user(request)
-                response.status_code = status.HTTP_201_CREATED
-                return JSONResponse(
-                    status_code=status.HTTP_201_CREATED,
-                    content={
-                        "status": status.HTTP_201_CREATED,
-                        "message": "Your account is created. Please contact admin for activation."
-                    }
-                )
-            except IntegrityError as e:
-                return JSONResponse(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    content=self.default_error_response(str(e.__cause__))
-                )
+        
                 
         @self.router.patch("/user/{id}", summary="Update user")
         async def updateUser(id: int, request: UserJson, response: Response):

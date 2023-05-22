@@ -10,4 +10,5 @@ from models.DependencyDetail import DependencyDetail
 from models.IncomeProtection import IncomeProtection
 from models.IncomeProtectionProvision import IncomeProtectionProvision
 from models.LifestyleProtection import LifestyleProtection
+from models.LifestyleProtectionInvestments import LifestyleProtectionInvestments
 

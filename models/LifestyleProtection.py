@@ -7,7 +7,7 @@ class LifestyleProtection(Base):
     __tablename__ = "lifestyle_protection"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("user.id"), index=True)
+    user_id = Column(Integer, ForeignKey("user.id"), index=True, unique=True)
     existing_provision = Column(Float, index=True, nullable=False)
     source_fund = Column(Float, index=True, nullable=False)
     gov_fund = Column(Float, index=True, nullable=False)
