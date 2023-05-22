@@ -71,7 +71,8 @@ resource = [
     ExpensesAPI,
     IncomeProtectionAPI,
     LifestyleProtectionAPI,
-    WealthAPI
+    WealthAPI,
+    KapritsoAPI
 ]
 
 '''

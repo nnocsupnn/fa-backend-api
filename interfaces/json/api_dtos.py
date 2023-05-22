@@ -6,6 +6,9 @@ from typing import Optional, List
 '''
 Enums
 '''
+class UserLevel(str, Enum):
+    admin = "admin"
+    user = "user"
 class Gender(str, Enum):
     female = "female"
     male = "male"

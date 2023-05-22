@@ -6,7 +6,11 @@ from fastapi.responses import JSONResponse
 from models import LifestyleProtection, LifestyleProtectionInvestments
 from sqlalchemy.orm import joinedload
 from interfaces.route_interface import RouteInterface
-from interfaces.json import LifestyleProtectionPatchJson
+from interfaces.json import LifestyleProtectionPatchJson, \
+    LifestyleProtectionInvestmentsPostJson, \
+    LifestyleProtectionInvestmentsPatchJson, \
+    LifestyleProtectionInvestmentsResponseJson, \
+    LifestyleProtectionResponseJson
 from services import LifestyleProtectionService
 from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
@@ -30,18 +34,59 @@ class LifestyleProtectionAPI(RouteInterface):
         self.service = LifestyleProtectionService
     
     def setup_routes(self):
+        '''
+        Lifestyle Protection
+        '''
         @self.router.get("/lifestyle-protection", summary="Get lifestyle protection")
-        async def getLifestyleProtection(response: Response, auth: AuthJWT = Depends()):
+        async def getLifestyleProtection(response: Response, auth: AuthJWT = Depends()) -> LifestyleProtectionResponseJson:
             auth.jwt_required()
             
             userId = auth.get_jwt_subject()
+            protection = self.service.getProtections(userId)
+            res = mapToObject(protection, LifestyleProtectionResponseJson)
             
-            return self.service.getProtections(userId)
-        
+            return res
+        '''
+        '''
         @self.router.patch("/lifestyle-protection", summary="Update lifestyle protection")
-        async def updateLifestyleProtection(request: LifestyleProtectionPatchJson, response: Response, auth: AuthJWT = Depends()):
+        async def updateLifestyleProtection(request: LifestyleProtectionPatchJson, response: Response, auth: AuthJWT = Depends()) -> LifestyleProtectionResponseJson or None:
+            auth.jwt_required()
+            
+            userId = auth.get_jwt_subject()
+            protection = self.service.update(userId, request)
+            res = mapToObject(protection, LifestyleProtectionResponseJson)
+            
+            return res
+        
+        
+        '''
+        Lifestyle Protection Investments
+        '''
+        @self.router.patch("/lifestyle-protection/investment/{investmentId}", summary="Update lifestyle protection investments")
+        async def updateLifestyleProtectionInvestments(investmentId: int, request: LifestyleProtectionInvestmentsPatchJson, response: Response) -> LifestyleProtectionInvestmentsResponseJson:
+            investment = self.service.updateInvestment(investmentId, request)
+            res = mapToObject(investment, LifestyleProtectionInvestmentsResponseJson)
+            return res
+        
+        '''
+        '''
+        @self.router.post("/lifestyle-protection/investment", summary="Add lifestyle protection investments")
+        async def saveLifestyleProtectionInvestments(request: LifestyleProtectionInvestmentsPostJson, response: Response, auth: AuthJWT = Depends()) -> LifestyleProtectionInvestmentsResponseJson:
             auth.jwt_required()
             
             userId = auth.get_jwt_subject()
             
-            return self.service.update(userId)
+            investment = self.service.saveInvestment(userId, request)
+            res = mapToObject(investment, LifestyleProtectionInvestmentsResponseJson)
+            return res
+        '''
+        '''
+        @self.router.get("/lifestyle-protection/investments", summary="Get lifestyle protection investments")
+        async def getLifestyleProtectionInvestments(response: Response, auth: AuthJWT = Depends()) -> List[LifestyleProtectionInvestmentsResponseJson]:
+            auth.jwt_required()
+            
+            userId = auth.get_jwt_subject()
+            investments = self.service.getInvestments(userId)
+            res = [mapToObject(investment, LifestyleProtectionInvestmentsResponseJson) for investment in investments]
+            return res
+        

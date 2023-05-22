@@ -1,6 +1,7 @@
 from interfaces.route_interface import RouteInterface
 from fastapi import APIRouter
-from config.db import Base, SessionLocal, engine, User, UserDetail, Occupation, Incomes, IncomeProtection, IncomeProtectionProvision, Dependencies, DependencyDetail, DependencyProvision, Expenses, TextTemplate
+from config.db import Base, SessionLocal, engine
+from models import *
 import datetime
 from interfaces.json import SuccessResponseJson
 
@@ -194,4 +195,4 @@ class TestAPI(RouteInterface):
                     db.rollback()
                     db.close()
             
-            return SuccessResponseJson(code=200, message="Done")
+            return SuccessResponseJson(status=200, message="Done")

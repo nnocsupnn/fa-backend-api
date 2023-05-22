@@ -2,8 +2,8 @@ from models import TextTemplate as TT
 from json import loads
 from config.functions import make_code_string
 from fastapi.exceptions import FastAPIError
-import re
-
+from sqlalchemy import exists
+from fastapi.logger import logger
 from interfaces.json.api_dtos import TextTemplate
 from config.db import SessionLocal as Session
 
@@ -30,32 +30,65 @@ class TextTemplateService:
             "Chief Information Officer (CIO)"
         ]
         
-        industries = ["IT"]
+        industries = []
+        
+        expenses_categories = [
+            "Essentials",
+            "Business",
+            "Optional",
+            "Educational Expense",
+            "Amortizations"
+        ]
         
         with Session() as db:
             try:
+                insert = []
+                # Ranks
                 for rank in ranks:
-                    r = TT(
-                    code=make_code_string(rank),
-                    description=rank,
-                    category="rank"
-                )
+                    rankq = db.query(exists().where(TT.description == rank))
+                    rank_exists = db.execute(rankq).scalar()
+
+                    if not rank_exists:
+                        i = TT(
+                            code=make_code_string(rank),
+                            description=rank,
+                            category="rank"
+                        )
+                        
+                        insert.append(i)
                 
-                db.add(r)
-                db.commit()
-                
-            
+                # Industries
                 for industry in industries:
-                    i = TT(
-                        code=make_code_string(industry),
-                        description=industry,
-                        category="industry"
-                    )
-                    
-                    db.add(i)
-                    db.commit()
-                    
+                    industryq = db.query(exists().where(TT.description == industry))
+                    industry_exists = db.execute(industryq).scalar()
+
+                    if not industry_exists:
+                        i = TT(
+                            code=make_code_string(industry),
+                            description=industry,
+                            category="industry"
+                        )
+                        
+                        insert.append(i)
+                # Expenses
+                for expenses_category in expenses_categories:
+                    expenses_categoryq = db.query(exists().where(TT.description == expenses_category))
+                    expenses_category_exists = db.execute(expenses_categoryq).scalar()
+
+                    if not expenses_category_exists:
+                        i = TT(
+                            code=make_code_string(expenses_category),
+                            description=expenses_category,
+                            category="expenses_category"
+                        )
+                        
+                        insert.append(i)
+                
+                db.add_all(insert)
+                db.commit()
                 db.close()
+                
+                print("--- Prepopulating templates completed.")
             except Exception:
                 db.rollback()
                 

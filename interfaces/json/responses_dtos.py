@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from datetime import date, datetime
 from enum import Enum
 from typing import Optional, List
-
+from interfaces.json import Gender, UserLevel
 
 # Income
 class IncomeResponseJson(BaseModel):
@@ -25,9 +25,9 @@ class IncomeProtectionProvisionResponseJson(BaseModel):
     updated_date: Optional[datetime] = None
     
 class IncomeProtectionResponseJson(BaseModel):
+    id: Optional[int] = None
     user_id: Optional[int] = None
     created_date: Optional[datetime] = None
-    id: Optional[int] = None
     date_started: Optional[date] = None
     updated_date: Optional[datetime] = None
     income_protection_provision: List[IncomeProtectionProvisionResponseJson] = None
@@ -145,6 +145,25 @@ class TextTemplatesResponseJson(BaseModel):
     created_date: Optional[datetime] = None
     id: Optional[int] = None
 
+# Lifestyle Protection
+class LifestyleProtectionResponseJson(BaseModel):
+    id: Optional[int] = None
+    user_id: Optional[int] = None
+    source_fund: Optional[float] = None
+    other_fund: Optional[float] = None
+    updated_date: Optional[datetime] = None
+    existing_provision: Optional[float] = None
+    gov_fund: Optional[float] = None
+    created_date: Optional[datetime] = None
+    
+class LifestyleProtectionInvestmentsResponseJson(BaseModel):
+    id: Optional[int] = None
+    user_id: Optional[int] = None
+    age: Optional[int] = None
+    projection_rate: Optional[float] = None
+    annual_investment: Optional[float] = None
+    created_date: Optional[datetime] = None
+    updated_date: Optional[datetime] = None
     
 # Auth
 class GrantType(str, Enum):
@@ -162,5 +181,55 @@ class JwtResponseJson(BaseModel):
     expires: int
     
 class SuccessResponseJson(BaseModel):
-    code: Optional[int] = 200
-    message: Optional[str] = "Done"
+    status: Optional[int] = 200
+    message: Optional[str] = "Success"
+    
+class WealthResponseJson(BaseModel):
+    id: Optional[int] = None
+    user_id: Optional[int] = None
+    real_properties_value: Optional[float] = None
+    personal_properties_value: Optional[float] = None
+    liquid_investments_value: Optional[float] = None
+    projected_apprec_rate_per_year: Optional[float] = None
+    projected_rate_return_on_fixed: Optional[float] = None
+    tax_rate: Optional[float] = None
+    created_date: Optional[datetime] = None
+    updated_date: Optional[datetime] = None
+    
+class KapritsoResponseJson(BaseModel):
+    id: Optional[int] = None
+    user_id: Optional[int] = None
+    factor: Optional[float] = None
+    daily_cost: Optional[float] = None
+    created_date: Optional[datetime] = None
+    updated_date: Optional[datetime] = None
+    
+class OccupationResponseJson(BaseModel):
+    id: Optional[int] = None
+    description: Optional[str] = None
+    rank: Optional[str] = None
+    industry: Optional[str] = None
+    
+class UserResponseJson(BaseModel):
+    id: Optional[int] = None
+    marital: Optional[str] = None
+    last_name: Optional[str] = None
+    occupation_id: Optional[int] = None
+    middle_name: Optional[str] = None
+    user_level: Optional[UserLevel] = None
+    gender: Optional[Gender] = None
+    deletable: Optional[int] = None
+    email_address: Optional[str] = None
+    password: Optional[str] = None
+    active: Optional[int] = None
+    first_name: Optional[str] = None
+    date_of_birth: Optional[date] = None
+    user_detail: Optional[UserDetailResponseJson] = None
+    dependencies: list[DependenciesResponseJson] = []
+    lifestyle_protection: Optional[LifestyleProtectionResponseJson] = None
+    lifestyle_protection_investments: list[LifestyleProtectionInvestmentsResponseJson] = []
+    kapritso: Optional[KapritsoResponseJson] = None
+    wealth: Optional[WealthResponseJson] = None
+    occupation: Optional[OccupationResponseJson] = None
+    income_protection: Optional[IncomeProtectionResponseJson] = None
+    

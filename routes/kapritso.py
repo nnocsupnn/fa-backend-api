@@ -1,4 +1,3 @@
-import json
 from sqlalchemy.exc import IntegrityError
 from fastapi import APIRouter, Response, status, Depends
 from fastapi.exceptions import FastAPIError
@@ -6,20 +5,20 @@ from fastapi.responses import JSONResponse
 from models import LifestyleProtection, LifestyleProtectionInvestments
 from sqlalchemy.orm import joinedload
 from interfaces.route_interface import RouteInterface
-from interfaces.json import WealthPatchJson, WealthResponseJson
-from services import WealthService
+from interfaces.json import KapritsoPatchJson, KapritsoResponseJson
+from services import KapritsoService
 from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
 from typing import Any, List
 from config.functions import mapToObject
 '''
-WealthAPI Resource
+KapritsoAPI Resource
 
 @interface RouteInterface
 @author Nino Casupanan
 @memberof MediCard
 '''
-class WealthAPI(RouteInterface):
+class KapritsoAPI(RouteInterface):
     def __init__(self, session):
         super().__init__()
         self.session = session
@@ -27,21 +26,21 @@ class WealthAPI(RouteInterface):
         self.setup_routes()
         
         # Services
-        self.service = WealthService
+        self.service = KapritsoService
     
     def setup_routes(self):
-        @self.router.get("/wealth", summary="Get Wealth")
-        async def getWealth(response: Response, auth: AuthJWT = Depends()) -> WealthResponseJson:
+        @self.router.get("/kapritso", summary="Get kapritso")
+        async def getKapritso(response: Response, auth: AuthJWT = Depends()) -> KapritsoResponseJson:
             userId = auth.get_jwt_subject()
-            
-            wealth = self.service.getWealths(userId)
-            res = mapToObject(wealth, WealthResponseJson)
+            kapritso = self.service.getKapritso(userId)
+            res = mapToObject(kapritso, KapritsoResponseJson)
             return res
+        
         '''
         '''
-        @self.router.patch("/wealth/{wealthId}", summary="Update Wealth")
-        async def getWealth(wealthId: int, request: WealthPatchJson, response: Response) -> WealthResponseJson:
-            
-            wealth = self.service.updateWealth(wealthId, request)
-            res = mapToObject(wealth, WealthResponseJson)
+        @self.router.patch("/kapritso", summary="Update kapritso")
+        async def getKapritso(request: KapritsoPatchJson, response: Response, auth: AuthJWT = Depends()) -> KapritsoResponseJson:
+            userId = auth.get_jwt_subject()
+            kapritso = self.service.updateKapritso(userId, request)
+            res = mapToObject(kapritso, KapritsoResponseJson)
             return res

@@ -9,7 +9,9 @@ from models import User, \
     IncomeProtection, \
     IncomeProtectionProvision, \
     LifestyleProtection, \
-    LifestyleProtectionInvestments
+    LifestyleProtectionInvestments, \
+    Wealth, \
+    Kapritso
 from json import loads
 from fastapi.exceptions import FastAPIError
 
@@ -74,6 +76,26 @@ class UserService:
             )
             
             db.add(lifestyle_protection)
+            
+            wealth = Wealth(
+                user_id=userModel.id,
+                real_properties_value = 0,
+                personal_properties_value = 0,
+                liquid_investments_value = 0,
+                projected_apprec_rate_per_year = 2,
+                projected_rate_return_on_fixed = 5,
+                tax_rate = 1
+            )
+            
+            db.add(wealth)
+            
+            kapritso = Kapritso(
+                user_id = userModel.id,
+                factor = 7,
+                daily_cost = 100
+            )
+            
+            db.add(kapritso)
             
             if user.user_detail != None:
                 userDetail = UserDetail(

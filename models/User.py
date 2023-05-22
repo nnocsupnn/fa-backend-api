@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, Date, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Enum, Date, ForeignKey, Boolean, func
 from sqlalchemy.orm import relationship, joinedload, validates
 from config.db import Base, SessionLocal, engine
 from models.Occupation import Occupation
@@ -26,9 +26,11 @@ class User(Base):
     occupation = relationship("Occupation", back_populates="users", lazy="joined")
     user_detail = relationship("UserDetail", back_populates=__tablename__, lazy="joined", uselist=False)
     dependencies = relationship("Dependencies", back_populates=__tablename__, cascade="all", lazy="joined")
-    income_protection = relationship("IncomeProtection", back_populates=__tablename__, cascade="all", lazy="joined")
-    lifestyle_protection = relationship("LifestyleProtection", back_populates=__tablename__, cascade="all", lazy="joined")
+    income_protection = relationship("IncomeProtection", back_populates=__tablename__, cascade="all", lazy="joined", uselist=False)
+    lifestyle_protection = relationship("LifestyleProtection", back_populates=__tablename__, cascade="all", lazy="joined", uselist=False)
     lifestyle_protection_investments = relationship("LifestyleProtectionInvestments", back_populates=__tablename__, cascade="all", lazy="joined")
+    wealth = relationship("Wealth", back_populates=__tablename__, cascade="all", lazy="joined", uselist=False)
+    kapritso = relationship("Kapritso", back_populates=__tablename__, cascade="all", lazy="joined", uselist=False)
 
     @staticmethod
     def get_user(user_id: int):

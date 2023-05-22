@@ -1,26 +1,26 @@
-from models import Wealth
-from interfaces.json import WealthPatchJson
+from models import Kapritso
+from interfaces.json import KapritsoPatchJson
 from config.db import SessionLocal as Session
 from sqlalchemy.exc import NoResultFound
 
-class WealthService:
+class KapritsoService:
     
-    def getWealths(userId: int):
+    def getKapritso(userId: int):
         result = None
         
         with Session() as db:
-            result = db.query(Wealth).filter(Wealth.user_id == userId).first()
+            result = db.query(Kapritso).filter(Kapritso.user_id == userId).first()
             
             db.close()
             
         return result
     
-    def updateWealth(wealthId: int, wealth: WealthPatchJson):
+    def updateKapritso(userId: int, kapritso: KapritsoPatchJson):
         result = None
         with Session() as db:
-            result = db.query(Wealth).filter(Wealth.id == wealthId).first()
+            result = db.query(Kapritso).filter(Kapritso.user_id == userId).first()
             
-            for field, value in vars(wealth).items():
+            for field, value in vars(kapritso).items():
                 if hasattr(result, field) and value != None:
                     setattr(result, field, value)
                     
