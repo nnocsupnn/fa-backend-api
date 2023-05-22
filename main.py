@@ -38,7 +38,8 @@ resource = [
     DepdenciesAPI, 
     DepdencyDetailAPI,
     IncomeAPI,
-    ExpensesAPI
+    ExpensesAPI,
+    IncomeProtectionAPI
 ]
 
 '''

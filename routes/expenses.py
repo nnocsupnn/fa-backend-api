@@ -13,7 +13,7 @@ from fastapi_jwt_auth import AuthJWT
 from typing import Any, List, Optional
 from config.functions import mapToObject
 '''
-UserAPI is class for User Resource
+TextTemplateAPI Resource
 
 @interface RouteInterface
 @author Nino Casupanan

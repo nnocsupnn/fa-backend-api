@@ -80,7 +80,7 @@ def mapToObject(source, dest, sub1 = None, sub2 = None) -> any:
         if type(value) in (int, float, str, bool, list, tuple, dict, date, datetime, Decimal):
             if hasattr(objectResponse, field):
                 setattr(objectResponse, field, value)
-        elif sub1 != None:
+        elif sub1 != None and value != None:
             # Level 1
             sub1Property = sub1()
             for sub1Field, sub1Value in vars(value).items():
@@ -90,7 +90,7 @@ def mapToObject(source, dest, sub1 = None, sub2 = None) -> any:
                 if type(sub1Value) in (int, float, str, bool, list, tuple, dict, date, datetime, Decimal):
                     if hasattr(sub1Property, sub1Field):
                         setattr(sub1Property, sub1Field, sub1Value)
-                elif sub2 != None:
+                elif sub2 != None and getattr(getattr(source, field), sub1Field) != None:
                     # Level 2
                     sub2Property = sub2()
                     for sub2Field, sub2Value in vars(getattr(getattr(source, field), sub1Field)).items():

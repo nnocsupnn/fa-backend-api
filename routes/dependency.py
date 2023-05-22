@@ -2,11 +2,12 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 from fastapi import APIRouter, Response, status, Depends
 from fastapi.responses import JSONResponse
 from interfaces.route_interface import RouteInterface
-from interfaces.json import Dependencies as DependenciesJson, DependenciesPostJson, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson
+from interfaces.json import Dependencies as DependenciesJson, DependenciesPostJson, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson, DependenciesResponseJson
 from services import DependencyService
 from models import Dependencies, User
 from fastapi_jwt_auth import AuthJWT
 from config.functions import mapToObject, mapToObjectA
+from typing import List
 
 class DepdenciesAPI(RouteInterface):
     def __init__(self, session):
@@ -42,22 +43,24 @@ class DepdenciesAPI(RouteInterface):
         '''
         '''  
         @self.router.get("/dependencies", summary="Listing dependencies")
-        async def getDependencies(response: Response, auth: AuthJWT = Depends()) -> DependenciesJson:
+        async def getDependencies(response: Response, auth: AuthJWT = Depends()) -> List[DependenciesResponseJson]:
             userId = auth.get_jwt_subject()
             
             dependencies = self.service.getDependencies(userId)
+            res = [mapToObject(dep, DependenciesResponseJson) for dep in dependencies]
             response.status_code = status.HTTP_200_OK
             if dependencies == None:
                 raise Exception("Not found.")
-            return dependencies
+            return res
         '''
         '''
         @self.router.post("/dependency", summary="Adding Dependency", description="Adding dependency, please see the schema. This includes other property")
-        async def postDependency(request: DependenciesPostJson, response: Response, auth: AuthJWT = Depends()):
+        async def postDependency(request: DependenciesPostJson, response: Response, auth: AuthJWT = Depends()) -> List[DependenciesResponseJson]:
             userId = auth.get_jwt_subject()
             self.service.dependency(userId, request)
             response.status_code = status.HTTP_200_OK
-            return Dependencies.getDependencies()
+            res = [mapToObject(dep, DependenciesResponseJson) for dep in Dependencies.getDependencies()]
+            return res
         '''
         '''     
         @self.router.patch("/dependency/{dependencyId}", summary="Updating dependency")

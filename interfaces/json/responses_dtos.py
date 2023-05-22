@@ -16,6 +16,14 @@ class IncomeResponseJson(BaseModel):
     active: Optional[int] = None
     updated_date: Optional[datetime] = None
 
+class IncomeProtectionResponseJson(BaseModel):
+    user_id: Optional[int] = None
+    income_amount: Optional[float] = None
+    created_date: Optional[datetime] = None
+    id: Optional[int] = None
+    date_started: Optional[date] = None
+    updated_date: Optional[datetime] = None
+    
 # Expenses
 class ExpenseResponseJson(BaseModel):
     expense_category: Optional[str] = None
@@ -111,26 +119,38 @@ class UserDetailResponseJson(BaseModel):
     
     
 # Templates
+
+class Categories(str, Enum):
+    expenses = "expenses"
+    education = "education"
+    rank = "rank"
+    industry = "industry"
+    expenses_category = "expenses_category"
+    
 class TextTemplatesResponseJson(BaseModel):
     code: Optional[str] = None
     description: Optional[str] = None
-    category: Optional[str] = None
+    category: Optional[Categories] = None
     updated_date: Optional[datetime] = None
     created_date: Optional[datetime] = None
     id: Optional[int] = None
 
+    
 # Auth
-
 class GrantType(str, Enum):
     password = "password"
     refresh = "refresh"
     
 class AuthenticationJson(BaseModel):
-    username: str
-    password: str
+    username: Optional[str] = None
+    password: Optional[str] = None
     grant_type: GrantType
     
 class JwtResponseJson(BaseModel):
     accessToken: str
     refreshToken: str
     expires: int
+    
+class SuccessResponseJson(BaseModel):
+    code: Optional[int] = 200
+    message: Optional[str] = "Done"

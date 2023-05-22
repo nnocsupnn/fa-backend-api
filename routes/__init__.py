@@ -7,3 +7,4 @@ from routes.text_template import TextTemplateAPI
 from routes.dependency_detail import DepdencyDetailAPI
 from routes.income import IncomeAPI
 from routes.expenses import ExpensesAPI
+from routes.income_protection import IncomeProtectionAPI

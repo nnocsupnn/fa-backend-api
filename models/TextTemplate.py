@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, func
+from sqlalchemy.orm import validates
 from config.db import Base, SessionLocal, engine
+from config.functions import make_code_string
 
 
 class TextTemplate(Base):
@@ -15,7 +17,6 @@ class TextTemplate(Base):
     @staticmethod
     def getTemplate(subj: str):
         db = SessionLocal()
-        print(subj)
         result = db.query(TextTemplate).filter(TextTemplate.code == subj).first()      
         db.close()
         return result
@@ -28,4 +29,10 @@ class TextTemplate(Base):
         db.close()
         return results
     
+    @staticmethod
+    def getTemplatesByCategory(category: str):
+        db = SessionLocal()
+        results = db.query(TextTemplate).filter(TextTemplate.category == category).all()
+        db.close()
+        return results
     

@@ -13,7 +13,7 @@ from fastapi_jwt_auth import AuthJWT
 from typing import Any, List
 from config.functions import mapToObject
 '''
-UserAPI is class for User Resource
+IncomeAPI Resource
 
 @interface RouteInterface
 @author Nino Casupanan

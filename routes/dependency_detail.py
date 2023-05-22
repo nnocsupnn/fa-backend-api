@@ -19,7 +19,7 @@ class DepdencyDetailAPI(RouteInterface):
         self.service = DependencyDetailService
         
     def setup_routes(self):
-        @self.router.get("/dependency/{dependencyId}/detail")
+        @self.router.get("/dependency/{dependencyId}/detail", summary="Get the dependency details")
         async def getDependencies(dependencyId: int, response: Response) -> DependencyDetailResponseJson:
             dependency = self.service.getDependencyDetail(dependencyId)
             response.status_code = status.HTTP_200_OK
@@ -29,7 +29,7 @@ class DepdencyDetailAPI(RouteInterface):
             res = mapToObject(dependency, DependencyDetailResponseJson, DependencyProvisionResponseJson)
             return res
         
-        @self.router.post("/dependency/{dependencyId}/detail")
+        @self.router.post("/dependency/{dependencyId}/detail", summary="Add dependency details")
         async def createDependencyDetail(dependencyId: int, request: DependencyDetailPostJson, response: Response) -> DependenciesResponseJson:
             dependency = self.service.save(dependencyId, request)
             response.status_code = status.HTTP_201_CREATED
@@ -39,7 +39,7 @@ class DepdencyDetailAPI(RouteInterface):
             res = mapToObject(dependency, DependenciesResponseJson)
             return res
                 
-        @self.router.patch("/dependency/{dependencyId}/detail")
+        @self.router.patch("/dependency/{dependencyId}/detail", summary="Update dependency detail")
         async def updateDependencyDetail(dependencyId: int, request: DependencyDetailJson, response: Response) -> DependenciesResponseJson:
             dependency = self.service.updateDependency(dependencyId, request)
             response.status_code = status.HTTP_200_OK

@@ -33,7 +33,7 @@ class TextTemplateCategory(str, Enum):
     education = "education"
     rank = "rank"
     industry = "industry"
-
+    expenses_category = "expenses_category"
 '''
 Models
 '''

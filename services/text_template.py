@@ -11,11 +11,14 @@ class TextTemplateService:
     def templates():
         return TT.getTemplates()
     
+    def templatesByCategory(category: str):
+        return TT.getTemplatesByCategory(category)
 
     def template(subj: str):
         return TT.getTemplate(subj=subj)
     
     def save(subj: TextTemplate):
+        result = None
         db = Session()
         
         tt = TT(
@@ -29,16 +32,21 @@ class TextTemplateService:
         tt.code = make_code_string(subj.description) + "_" + str(tt.id)
         
         db.commit()
+        result = db.query(TT).filter(TT.id == tt.id).first()
         db.close()
+        
+        return result
         
     def delete(code: str):
         db = Session()
         
         try:
         
-            result = db.query(TextTemplate).where(TextTemplate.code == code).delete()
+            result = db.query(TT).where(TT.code == code).first()
+            if result != None:
+                db.query(TT).where(TT.code == code).delete()
+                db.commit()
             
-            db.commit()
             db.close()
             return result
         except Exception as e:

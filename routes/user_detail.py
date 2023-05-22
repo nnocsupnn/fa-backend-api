@@ -11,7 +11,7 @@ from config.functions import serialize_model, mapToObject
 from fastapi_jwt_auth import AuthJWT
 import jwt
 '''
-UserAPI is class for User Resource
+TextTemplateAPI Resource
 
 @interface RouteInterface
 @author Nino Casupanan

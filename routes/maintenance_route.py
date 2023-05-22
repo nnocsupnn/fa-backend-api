@@ -2,6 +2,7 @@ from interfaces.route_interface import RouteInterface
 from fastapi import APIRouter
 from config.db import Base, SessionLocal, engine, User, UserDetail, Occupation, Incomes, IncomeProtection, IncomeProtectionProvision, Dependencies, DependencyDetail, DependencyProvision, Expenses, TextTemplate
 import datetime
+from interfaces.json import SuccessResponseJson
 
 class TestAPI(RouteInterface):
     def __init__(self, session):
@@ -11,8 +12,8 @@ class TestAPI(RouteInterface):
         self.setup_routes()
         
     def setup_routes(self):
-        @self.router.get("/populate")
-        async def populate():
+        @self.router.get("/populate", summary="Populating test data", description="This route is used for testing only.")
+        async def populate() -> SuccessResponseJson:
             with SessionLocal() as db:
                 try:
                     rank = TextTemplate(
@@ -176,4 +177,4 @@ class TestAPI(RouteInterface):
                     db.rollback()
                     db.close()
             
-            return { "status": 200, "message": "Done" }
+            return SuccessResponseJson(200, "Done")
