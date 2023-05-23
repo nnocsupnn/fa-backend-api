@@ -109,6 +109,7 @@ class UserDetail(BaseModel):
     retirement_age: Optional[int] = None
     retirement_package: Optional[float] = None
     life_expectancy: Optional[int] = None
+    avg_annual_salary_incr: Optional[float] = None
     
 class UserRegister(BaseModel):
     first_name: str
@@ -133,6 +134,8 @@ class User(BaseModel):
     user_detail: Optional[UserDetail] = None
     user_level: Optional[str] = None
     active: Optional[int] = None
+    basic_salary: Optional[float] = None
+    net_salary: Optional[float] = None
     
 class Dependencies(BaseModel):
     name: Optional[str] = None

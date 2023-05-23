@@ -58,8 +58,6 @@ class LifestyleProtectionAPI(RouteInterface):
             res = mapToObject(protection, LifestyleProtectionResponseJson)
             
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
-        
-        
         '''
         Lifestyle Protection Investments
         '''

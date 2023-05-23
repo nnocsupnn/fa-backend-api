@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, Date, ForeignKey, Boolean, func
+from sqlalchemy import Column, Integer, String, Enum, Date, ForeignKey, Boolean, func, Float
 from sqlalchemy.orm import relationship, joinedload, validates
 from config.db import Base, SessionLocal, engine
 from models.Occupation import Occupation
@@ -21,6 +21,8 @@ class User(Base):
     occupation_id = Column(Integer, ForeignKey('occupation.id'), index=True, nullable=True)
     user_level = Column(Enum("admin", "user"), index=True, default="user", nullable=False)
     deletable = Column(Boolean, index=True, default=False, nullable=False)
+    basic_salary = Column(Float(asdecimal=True), index=True, default=0)
+    net_salary = Column(Float(asdecimal=True), index=True, default=0)
     
     # Relationships
     occupation = relationship("Occupation", back_populates="users", lazy="joined")

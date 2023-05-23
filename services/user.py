@@ -100,10 +100,11 @@ class UserService:
             if user.user_detail != None:
                 userDetail = UserDetail(
                     user_id=userModel.id,
-                    year_business=user.user_detail.year_business,
-                    retirement_age=user.user_detail.retirement_age,
-                    retirement_package=user.user_detail.retirement_package,
-                    life_expectancy=user.user_detail.life_expectancy
+                    year_business=user.user_detail.year_business if user.user_detail.year_business != None else 0,
+                    retirement_age=user.user_detail.retirement_age if user.user_detail.retirement_age != None else 0,
+                    retirement_package=user.user_detail.retirement_package if user.user_detail.retirement_package != None else 0,
+                    life_expectancy=user.user_detail.life_expectancy if user.user_detail.life_expectancy != None else 0,
+                    avg_annual_salary_incr=user.user_detail.avg_annual_salary_incr if user.user_detail.avg_annual_salary_incr != None else 0
                 )
                 
                 db.add(userDetail)

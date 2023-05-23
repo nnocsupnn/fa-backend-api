@@ -124,9 +124,9 @@ class UserDetailResponseJson(BaseModel):
     retirement_package: Optional[float] = None
     retirement_age: Optional[int] = None
     life_expectancy: Optional[int] = None
+    avg_annual_salary_incr: Optional[float] = None
     expenses: Optional[List[ExpenseResponseJson]] = []
     incomes: Optional[List[IncomeResponseJson]] = []
-    
     
 # Templates
 
@@ -224,6 +224,8 @@ class UserResponseJson(BaseModel):
     active: Optional[int] = None
     first_name: Optional[str] = None
     date_of_birth: Optional[date] = None
+    basic_salary: Optional[float] = None
+    net_salary: Optional[float] = None
     user_detail: Optional[UserDetailResponseJson] = None
     dependencies: list[DependenciesResponseJson] = []
     lifestyle_protection: Optional[LifestyleProtectionResponseJson] = None
