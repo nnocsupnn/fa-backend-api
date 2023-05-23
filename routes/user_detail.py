@@ -9,7 +9,7 @@ from interfaces.json import User as UserJson, UserDetail as UserDetailJson, User
 from services import UserDetailService
 from config.functions import serialize_model, mapToObject
 from fastapi_jwt_auth import AuthJWT
-import jwt
+from fastapi.encoders import jsonable_encoder 
 '''
 TextTemplateAPI Resource
 
@@ -41,8 +41,7 @@ class UserDetailAPI(RouteInterface):
             res.expenses =  [mapToObject(val, ExpenseResponseJson) for val in user.expenses]
             res.incomes =  [mapToObject(val, IncomeResponseJson) for val in user.incomes]
             
-            response.status_code = status.HTTP_200_OK
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
                 
         '''
         '''   
@@ -52,8 +51,7 @@ class UserDetailAPI(RouteInterface):
             userId = auth.get_jwt_subject()
             user = self.service.update(userId, request)
             
-            response.status_code = status.HTTP_200_OK
-            return user
+            return JSONResponse(content=jsonable_encoder(user), status_code=status.HTTP_200_OK)
         '''
         '''       
         @self.router.get("/user/{id}/detail", summary="Get user's detail")
@@ -62,16 +60,18 @@ class UserDetailAPI(RouteInterface):
             
             res = UserDetailResponseJson
             res = mapToObject(user, res)
-            res.expenses =  [mapToObject(val, ExpenseResponseJson) for val in user.expenses]
-            res.incomes =  [mapToObject(val, IncomeResponseJson) for val in user.incomes]
+            res.expenses =  [mapToObject(val, ExpenseResponseJson) for val in user.expenses] if user.expenses != None else []
+            res.incomes =  [mapToObject(val, IncomeResponseJson) for val in user.incomes] if user.incomes != None else []
             
-            response.status_code = status.HTTP_200_OK
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         '''
         '''      
         @self.router.patch("/user/{id}/detail", summary="Update user's detail")
-        async def getDetail(id: int, request: UserDetailJson, response: Response):
+        async def getDetail(id: int, request: UserDetailJson, response: Response) -> UserDetailResponseJson:
             user = self.service.update(id, request)
             
             response.status_code = status.HTTP_200_OK
-            return user
+            res = mapToObject(user, UserDetailResponseJson)
+            res.expenses =  [mapToObject(val, ExpenseResponseJson) for val in user.expenses] if user.expenses != None else []
+            res.incomes =  [mapToObject(val, IncomeResponseJson) for val in user.incomes] if user.incomes != None else []
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)

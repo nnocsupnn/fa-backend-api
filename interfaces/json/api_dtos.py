@@ -68,13 +68,6 @@ class DependencyDetailPostJson(BaseModel):
     tuition_fee_incr_perc: int
     dependency_provision: Optional[DependencyProvision] = None
 
-class ExpensePatchJson(BaseModel):
-    expense_amount: Optional[float] = None
-    description: Optional[str] = None
-    expense_started_date: Optional[date] = None
-    expense_end_date: Optional[date] = None
-    expense_category: Optional[str] = None
-    active: Optional[int] = None
     
 class Expenses(BaseModel):
     user_detail_id: int
@@ -83,12 +76,7 @@ class Expenses(BaseModel):
     expense_started_date: date
     expense_end_date: date
     
-    
-class IncomePatchJson(BaseModel):
-    income_amount: Optional[float] = None
-    description: Optional[str] = None
-    income_started_date: Optional[date] = None
-    income_end_date: Optional[date] = None
+
     
 class Income(BaseModel):
     user_detail_id: int
@@ -152,9 +140,5 @@ class Dependencies(BaseModel):
     relationship: Optional[Relationship] = None
     date_of_birth: Optional[date] = None
     
-class DependenciesPostJson(BaseModel):
-    name: str
-    gender: Gender
-    relationship: Relationship
-    date_of_birth: date
+
     

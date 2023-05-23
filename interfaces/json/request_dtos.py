@@ -1,8 +1,44 @@
 from pydantic import BaseModel, Field
 from datetime import date, datetime
 from enum import Enum
+from interfaces.json import Gender, Relationship
 from typing import Optional, List
 
+class IncomePostJson(BaseModel):
+    description: str
+    income_end_date: Optional[date] = None
+    income_amount: float
+    income_started_date: Optional[date] = None
+    active: Optional[int] = None
+    
+class ExpensePostJson(BaseModel):
+    expense_category: str
+    description: str
+    active: Optional[int] = None
+    expense_amount: float
+    expense_started_date: Optional[date] = None
+    expense_end_date: Optional[date] = None
+    
+class IncomePatchJson(BaseModel):
+    income_amount: Optional[float] = None
+    description: Optional[str] = None
+    income_started_date: Optional[date] = None
+    income_end_date: Optional[date] = None
+    
+class ExpensePatchJson(BaseModel):
+    expense_amount: Optional[float] = None
+    description: Optional[str] = None
+    expense_started_date: Optional[date] = None
+    expense_end_date: Optional[date] = None
+    expense_category: Optional[str] = None
+    active: Optional[int] = None
+
+class DependenciesPostJson(BaseModel):
+    name: str
+    gender: Gender
+    relationship: Relationship
+    date_of_birth: date
+    
 class IncomeProtectionProvisionPostJson(BaseModel):
     amount: Optional[float] = 0
     
@@ -28,7 +64,7 @@ class LifestyleProtectionInvestmentsPostJson(BaseModel):
     projection_rate: float
     
 class LifestyleProtectionInvestmentsPatchJson(BaseModel):
-    age: int
+    age: Optional[int] = None
     annual_investment: float
     projection_rate: float
     

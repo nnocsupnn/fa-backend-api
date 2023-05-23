@@ -12,6 +12,7 @@ from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
 from typing import Any, List
 from config.functions import mapToObject
+from fastapi.encoders import jsonable_encoder
 '''
 WealthAPI Resource
 
@@ -35,7 +36,7 @@ class WealthAPI(RouteInterface):
             userId = auth.get_jwt_subject()
             
             wealth = self.service.getWealths(userId)
-            res = mapToObject(wealth, WealthResponseJson)
+            res = mapToObject(wealth, WealthResponseJson) if wealth != None else WealthResponseJson()
             return res
         '''
         '''
@@ -43,5 +44,5 @@ class WealthAPI(RouteInterface):
         async def getWealth(wealthId: int, request: WealthPatchJson, response: Response) -> WealthResponseJson:
             
             wealth = self.service.updateWealth(wealthId, request)
-            res = mapToObject(wealth, WealthResponseJson)
-            return res
+            res = mapToObject(wealth, WealthResponseJson) if wealth != None else WealthResponseJson()
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)

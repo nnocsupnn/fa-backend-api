@@ -11,6 +11,7 @@ from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
 from typing import Any, List
 from config.functions import mapToObject
+from fastapi.encoders import jsonable_encoder
 '''
 KapritsoAPI Resource
 
@@ -34,7 +35,7 @@ class KapritsoAPI(RouteInterface):
             userId = auth.get_jwt_subject()
             kapritso = self.service.getKapritso(userId)
             res = mapToObject(kapritso, KapritsoResponseJson)
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         
         '''
         '''
@@ -43,4 +44,4 @@ class KapritsoAPI(RouteInterface):
             userId = auth.get_jwt_subject()
             kapritso = self.service.updateKapritso(userId, request)
             res = mapToObject(kapritso, KapritsoResponseJson)
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)

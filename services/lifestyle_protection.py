@@ -31,6 +31,14 @@ class LifestyleProtectionService:
             
         return result
     
+    def getInvestmentsById(investmentId: int):
+        result = None
+        with Session() as db:
+            result = db.query(LifestyleProtectionInvestments).filter(LifestyleProtectionInvestments.id == investmentId).first()
+            
+            db.close()
+        
+        return result
     
     def getInvestments(userId: int):
         result = None

@@ -16,6 +16,7 @@ from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
 from typing import Any, List
 from config.functions import mapToObject
+from fastapi.encoders import jsonable_encoder
 '''
 LifestyleProtectionAPI Resource
 
@@ -45,7 +46,7 @@ class LifestyleProtectionAPI(RouteInterface):
             protection = self.service.getProtections(userId)
             res = mapToObject(protection, LifestyleProtectionResponseJson)
             
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         '''
         '''
         @self.router.patch("/lifestyle-protection", summary="Update lifestyle protection")
@@ -56,17 +57,26 @@ class LifestyleProtectionAPI(RouteInterface):
             protection = self.service.update(userId, request)
             res = mapToObject(protection, LifestyleProtectionResponseJson)
             
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         
         
         '''
         Lifestyle Protection Investments
         '''
+        @self.router.get("/lifestyle-protection/investment/{investmentId}", summary="Update lifestyle protection investments")
+        async def updateLifestyleProtectionInvestments(investmentId: int, response: Response) -> LifestyleProtectionInvestmentsResponseJson:
+            investment = self.service.getInvestmentsById(investmentId)
+            res = mapToObject(investment, LifestyleProtectionInvestmentsResponseJson)
+            
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
+        '''
+        '''
         @self.router.patch("/lifestyle-protection/investment/{investmentId}", summary="Update lifestyle protection investments")
         async def updateLifestyleProtectionInvestments(investmentId: int, request: LifestyleProtectionInvestmentsPatchJson, response: Response) -> LifestyleProtectionInvestmentsResponseJson:
             investment = self.service.updateInvestment(investmentId, request)
             res = mapToObject(investment, LifestyleProtectionInvestmentsResponseJson)
-            return res
+            
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         
         '''
         '''
@@ -78,7 +88,7 @@ class LifestyleProtectionAPI(RouteInterface):
             
             investment = self.service.saveInvestment(userId, request)
             res = mapToObject(investment, LifestyleProtectionInvestmentsResponseJson)
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_201_CREATED)
         '''
         '''
         @self.router.get("/lifestyle-protection/investments", summary="Get lifestyle protection investments")
@@ -88,5 +98,5 @@ class LifestyleProtectionAPI(RouteInterface):
             userId = auth.get_jwt_subject()
             investments = self.service.getInvestments(userId)
             res = [mapToObject(investment, LifestyleProtectionInvestmentsResponseJson) for investment in investments]
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         

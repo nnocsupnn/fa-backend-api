@@ -18,7 +18,7 @@ def ex_fa_exception_handler(request, exc: Exception):
     )
     
 
-def fa_exception_handler(request, exc: NoResultFound):
+def nr_exception_handler(request, exc: NoResultFound):
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
         content={

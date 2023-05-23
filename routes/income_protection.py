@@ -12,6 +12,7 @@ from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
 from typing import Any, List
 from config.functions import mapToObject
+from fastapi.encoders import jsonable_encoder
 '''
 IncomeProtectionAPI Resource
 
@@ -39,8 +40,9 @@ class IncomeProtectionAPI(RouteInterface):
             incomeProtection = self.service.incomeProtections(userId)
             res = mapToObject(incomeProtection, IncomeProtectionResponseJson)
             res.income_protection_provision = [mapToObject(prov, IncomeProtectionProvisionResponseJson) for prov in incomeProtection.income_protection_provision]
-            return res
-        
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
+        '''
+        '''
         @self.router.post("/income-protection", summary="Save Income protection", description="Saving income protection. Note: Only 1 income protection is allowed per user.")
         async def incomeProtection(incomeProtection: IncomeProtectionPostJson, response: Response, auth: AuthJWT = Depends()) -> IncomeProtectionResponseJson:
             auth.jwt_required()
@@ -50,20 +52,21 @@ class IncomeProtectionAPI(RouteInterface):
             res = mapToObject(incomeProtection, IncomeProtectionResponseJson)
             res.income_protection_provision = [mapToObject(prov, IncomeProtectionProvisionResponseJson) for prov in incomeProtection.income_protection_provision]
             
-            return incomeProtection
-        
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_201_CREATED)
+        '''
+        '''
         @self.router.post("/income-protection/{incomeProtectionId}/provision", summary="Save Income protection provision")
         async def incomeProtection(incomeProtectionId: int, incomeProtectionProvision: IncomeProtectionProvisionPostJson, response: Response) -> IncomeProtectionResponseJson:
             incomeProtection = self.service.saveIncomeProtectionProvision(incomeProtectionProvision, incomeProtectionId)
             
             res = mapToObject(incomeProtection, IncomeProtectionResponseJson)
             res.income_protection_provision = [mapToObject(prov, IncomeProtectionProvisionResponseJson) for prov in incomeProtection.income_protection_provision]
-            return res
-        
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_201_CREATED)
+        '''
+        '''
         @self.router.patch("/income-protection/{incomeProtectionId}/provision/{incomeProtectionProvisionId}", summary="Update income protection provision")
         async def updateIncomeProtection(incomeProtectionId: int, incomeProtectionProvisionId: int, incomeProtectionJson: IncomeProtectionProvisionPatchJson, response: Response) -> IncomeProtectionProvisionResponseJson:
             incomeProtection = self.service.updateIncomeProtection(incomeProtectionId, incomeProtectionProvisionId, incomeProtectionJson)
-            response.status_code = status.HTTP_202_ACCEPTED
             
             res = mapToObject(incomeProtection, IncomeProtectionProvisionResponseJson)
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_202_ACCEPTED)

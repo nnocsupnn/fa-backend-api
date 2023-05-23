@@ -8,6 +8,7 @@ from models import Dependencies, User
 from fastapi_jwt_auth import AuthJWT
 from config.functions import mapToObject, mapToObjectA
 from typing import List
+from fastapi.encoders import jsonable_encoder
 
 class DepdenciesAPI(RouteInterface):
     def __init__(self, session):
@@ -22,24 +23,17 @@ class DepdenciesAPI(RouteInterface):
     def setup_routes(self):
         @self.router.get("/dependency/{dependencyId}", summary="Getting dependency")
         async def getDependencies(dependencyId: int, response: Response) -> DependenciesResponseJsonFull:
-            try:
-                dependency = Dependencies.getDependency(dependencyId)
-                response.status_code = status.HTTP_200_OK
-                if dependency == None:
-                    raise NoResultFound(f"Dependency with ID {dependencyId} not found.")
+            dependency = Dependencies.getDependency(dependencyId)
+            if dependency == None:
+                raise NoResultFound(f"Dependency with ID {dependencyId} not found.")
 
-                # res = mapToObjectA(dependency, DependenciesResponseJsonFull(), {
-                #     "dependency_detail": DependencyDetailResponseJson(), 
-                #     "dependency_provision": DependencyProvisionResponseJson()
-                # }, DependenciesResponseJsonFull())
-                
-                res = mapToObject(dependency, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson)
-                return res
-            except NoResultFound as e:
-                return JSONResponse(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    content=self.default_error_response(str(e), status.HTTP_404_NOT_FOUND)
-                )
+            # res = mapToObjectA(dependency, DependenciesResponseJsonFull(), {
+            #     "dependency_detail": DependencyDetailResponseJson(), 
+            #     "dependency_provision": DependencyProvisionResponseJson()
+            # }, DependenciesResponseJsonFull())
+            
+            res = mapToObject(dependency, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson)
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         '''
         '''  
         @self.router.get("/dependencies", summary="Listing dependencies")
@@ -47,31 +41,31 @@ class DepdenciesAPI(RouteInterface):
             userId = auth.get_jwt_subject()
             
             dependencies = self.service.getDependencies(userId)
-            res = [mapToObject(dep, DependenciesResponseJson) for dep in dependencies]
-            response.status_code = status.HTTP_200_OK
             if dependencies == None:
                 raise Exception("Not found.")
-            return res
+            
+            res = [mapToObject(dep, DependenciesResponseJson) for dep in dependencies]
+            
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         '''
         '''
         @self.router.post("/dependency", summary="Adding Dependency", description="Adding dependency, please see the schema. This includes other property")
         async def postDependency(request: DependenciesPostJson, response: Response, auth: AuthJWT = Depends()) -> List[DependenciesResponseJson]:
             userId = auth.get_jwt_subject()
             self.service.dependency(userId, request)
-            response.status_code = status.HTTP_200_OK
             res = [mapToObject(dep, DependenciesResponseJson) for dep in Dependencies.getDependencies()]
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_201_CREATED)
         '''
         '''     
         @self.router.patch("/dependency/{dependencyId}", summary="Updating dependency")
         async def updateDependency(dependencyId: int, request: DependenciesJson, response: Response):
             dependency = self.service.updateDependency(dependencyId, request)
-            response.status_code = status.HTTP_204_NO_CONTENT
-            return dependency
+            res = mapToObject(dependency, DependenciesResponseJson) if dependency != None else DependenciesResponseJson()
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         '''
         '''   
         @self.router.delete("/dependency/{dependencyId}", summary="Deleting dependency", description="Deleting dependency will also delete the detail and provision.")
         async def updateDependency(dependencyId: int, response: Response):
             dependency = self.service.deleteDependency(dependencyId)
-            response.status_code = status.HTTP_200_OK
+            response.status_code = status.HTTP_204_NO_CONTENT
             return dependency

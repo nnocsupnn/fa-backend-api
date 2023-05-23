@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, func
-from sqlalchemy.orm import relationship
-
+from sqlalchemy.orm import relationship, validates
+from models import TextTemplate
 from config.db import Base, SessionLocal, engine
+from sqlalchemy.exc import NoResultFound
 
 class Expenses(Base):
     __tablename__ = "expenses"
@@ -18,3 +19,16 @@ class Expenses(Base):
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     
     user_detail = relationship("UserDetail", back_populates=__tablename__, cascade="all", lazy="select")
+    
+    def validator(self, key, code):
+        with SessionLocal() as db:
+            tt = db.query(TextTemplate).filter(TextTemplate.code == code).count()
+            db.close()
+            if tt == 0:
+                raise NoResultFound(f"{key}={code} is not registered in text_templates")
+            else:
+                return code
+    
+    @validates('expense_category')
+    def validate_rank(self, key, expense_category):
+        return self.validator(key, expense_category)

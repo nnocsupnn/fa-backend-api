@@ -10,6 +10,7 @@ from services import TextTemplateService
 from config.functions import serialize_model, mapToObject
 from fastapi_jwt_auth import AuthJWT
 from typing import List 
+from fastapi.encoders import jsonable_encoder
 '''
 TextTemplateAPI Resource
 
@@ -32,25 +33,25 @@ class TextTemplateAPI(RouteInterface):
         def templates() -> List[TextTemplatesResponseJson]:
             templates = self.service.templates()
             res = [mapToObject(val, TextTemplatesResponseJson) for val in templates]
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
             
         @self.router.get("/template/{code}", summary="Get template by code")
         def template(code: str) -> TextTemplatesResponseJson:
             template = self.service.template(subj=code)
             res = mapToObject(template, TextTemplatesResponseJson)
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
             
         @self.router.post("/template", summary="Add template")
         def template(tt: TextTemplateJson) -> TextTemplatesResponseJson:
             result = self.service.save(tt)
             res = mapToObject(result, TextTemplatesResponseJson)
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_201_CREATED)
         
-        @self.router.post("/template/{category}", summary="Get template by category")
+        @self.router.get("/template/category/{category}", summary="Get template by category")
         def template(category: Categories) -> List[TextTemplatesResponseJson]:
             templates = self.service.templatesByCategory(category=category)
             res = [mapToObject(val, TextTemplatesResponseJson) for val in templates]
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
             
         @self.router.delete("/template/{code}", summary="Deleting template by Code", status_code=status.HTTP_204_NO_CONTENT)
         def template(code: str, response: Response):

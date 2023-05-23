@@ -11,7 +11,8 @@ class DependencyDetailService:
     def getDependencyDetail(id: int):
         db = Session()
         stmt = select(DependencyDetail).join(Dependencies).where(Dependencies.id == id)
-        detail = db.execute(stmt).first()[0]
+        res = db.execute(stmt).first()
+        detail = res[0] if res != None else None
         # detail = db.query(Dependencies)\
         #     .filter(Dependencies.id == id)\
         #     .first()

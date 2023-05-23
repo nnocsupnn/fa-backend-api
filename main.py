@@ -6,7 +6,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from config.db import Base, SessionLocal, engine
 from config.functions import nullCheckingResponse
-from config.exception_handlers import fa_exception_handler, ex_fa_exception_handler
+from config.exception_handlers import fa_exception_handler, ex_fa_exception_handler, nr_exception_handler
 from routes import *
 from security import AuthSecurity
 from services import TextTemplateService as Templates
@@ -89,7 +89,7 @@ Run all API Classes to registered to our main router
 '''
 for instance in resource:
     app.add_exception_handler(Exception, ex_fa_exception_handler)
-    app.add_exception_handler(NoResultFound, fa_exception_handler)
+    app.add_exception_handler(NoResultFound, nr_exception_handler)
     app.add_exception_handler(IntegrityError, fa_exception_handler)
     
     app.include_router(instance(SessionLocal).router, dependencies=[Depends(authSecurity.auth_user)], prefix="/fa/api", tags=[instance.__name__])

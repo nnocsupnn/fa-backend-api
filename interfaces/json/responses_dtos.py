@@ -95,33 +95,33 @@ class DependenciesResponseJsonFull(BaseModel):
 # User Detail
 
 class ExpenseResponseJson(BaseModel):
-    expense_category: Optional[str] = None
     id: Optional[int] = None
-    expense_started_date: Optional[date] = None
-    active: Optional[int] = None
-    updated_date: Optional[datetime] = None
     user_detail_id: Optional[int] = None
+    expense_category: Optional[str] = None
     expense_amount: Optional[float] = None
     description: Optional[str] = None
+    active: Optional[int] = None
+    expense_started_date: Optional[date] = None
     expense_end_date: Optional[date] = None
+    updated_date: Optional[datetime] = None
     created_date: Optional[datetime] = None
 
 class IncomeResponseJson(BaseModel):
-    description: Optional[str] = None
     id: Optional[int] = None
+    user_detail_id: Optional[int] = None
+    description: Optional[str] = None
+    income_amount: Optional[float] = None
+    active: Optional[int] = None
+    income_started_date: Optional[date] = None
     income_end_date: Optional[date] = None
     created_date: Optional[datetime] = None
-    user_detail_id: Optional[int] = None
-    income_amount: Optional[float] = None
-    income_started_date: Optional[date] = None
-    active: Optional[int] = None
     updated_date: Optional[datetime] = None
 
 class UserDetailResponseJson(BaseModel):
+    id: Optional[int] = None
     user_id: Optional[int] = None
     year_business: Optional[int] = None
     retirement_package: Optional[float] = None
-    id: Optional[int] = None
     retirement_age: Optional[int] = None
     life_expectancy: Optional[int] = None
     expenses: Optional[List[ExpenseResponseJson]] = []
@@ -138,12 +138,12 @@ class Categories(str, Enum):
     expenses_category = "expenses_category"
     
 class TextTemplatesResponseJson(BaseModel):
+    id: Optional[int] = None
     code: Optional[str] = None
     description: Optional[str] = None
     category: Optional[Categories] = None
     updated_date: Optional[datetime] = None
     created_date: Optional[datetime] = None
-    id: Optional[int] = None
 
 # Lifestyle Protection
 class LifestyleProtectionResponseJson(BaseModel):

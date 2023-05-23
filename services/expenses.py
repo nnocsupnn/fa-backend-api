@@ -1,5 +1,5 @@
 from models import Expenses, UserDetail
-from interfaces.json.api_dtos import ExpensePatchJson
+from interfaces.json import ExpensePatchJson, ExpensePostJson
 from config.db import SessionLocal as Session
 from sqlalchemy.exc import NoResultFound
 
@@ -29,6 +29,27 @@ class ExpensesServices:
                 db.close()
                 raise NoResultFound(f"No expense found.")
             
+            db.close()
+            
+        return result
+    
+    def saveExpense(userId: int, expense: ExpensePostJson):
+        result = None
+        with Session() as db:
+            userDetail = db.query(UserDetail).filter(UserDetail.id == userId).first()
+            result = Expenses(
+                user_detail_id=userDetail.id,
+                expense_amount=expense.expense_amount,
+                expense_category=expense.expense_category,
+                description=expense.description,
+                expense_started_date=expense.expense_started_date if expense.expense_started_date != None else 0,
+                expense_end_date=expense.expense_end_date if expense.expense_end_date != None else 0,
+                active=expense.active if expense.active != None else 0,
+            )
+            
+            db.add(result)
+            db.commit()
+            db.refresh(result)
             db.close()
             
         return result

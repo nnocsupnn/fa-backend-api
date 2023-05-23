@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, func
-from sqlalchemy.orm import relationship
-
+from sqlalchemy.orm import relationship, validates
+from models import TextTemplate
 from config.db import Base, SessionLocal, engine
 
 class Incomes(Base):

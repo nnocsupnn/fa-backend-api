@@ -29,16 +29,13 @@ class Occupation(Base):
         return
 
     def validator(self, key, code):
-        try:
-            with SessionLocal() as db:
-                tt = db.query(TextTemplate).filter(TextTemplate.code == code).count()
-                db.close()
-                if tt == 0:
-                    raise Exception(f"{key}={code} is not registered in text_templates")
-                else:
-                    return code
-        except Exception as e:
-            raise e
+        with SessionLocal() as db:
+            tt = db.query(TextTemplate).filter(TextTemplate.code == code).count()
+            db.close()
+            if tt == 0:
+                raise Exception(f"{key}={code} is not registered in text_templates")
+            else:
+                return code
     
     @validates('rank')
     def validate_rank(self, key, rank):

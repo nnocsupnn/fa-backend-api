@@ -21,6 +21,7 @@ from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
 from typing import List
 from config.functions import mapToObject
+from fastapi.encoders import jsonable_encoder
 '''
 UserAPI is class for User Resource
 
@@ -65,7 +66,7 @@ class UserAPI(RouteInterface):
             user = User.get_user(user_id=userId)
             
             res = self.mapToUserResponse(user)
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         
         @self.router.get("/users", summary="Get all users", description="Note: this route is for `admin` role user.")
         async def getUsers(auth: AuthJWT = Depends()) -> List[UserResponseJson]:
@@ -77,7 +78,7 @@ class UserAPI(RouteInterface):
             
             users = User.get_users()
             res = [self.mapToUserResponse(user) for user in users]
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         
         
         @self.router.get("/user/{id}", summary="Get user", description="Note: this route is for `admin` role user.")
@@ -87,12 +88,11 @@ class UserAPI(RouteInterface):
             # if not user.user_level.__eq__("admin"):
             #     raise Exception("You are not allowed on this path.")
             
-            response.status_code = status.HTTP_200_OK
             '''
             Get user
             '''
             res = self.mapToUserResponse(user)
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
                 
         
                 
@@ -101,10 +101,9 @@ class UserAPI(RouteInterface):
             user = self.service.updateUser(id, request)
             response.status_code = status.HTTP_200_OK
             res = self.mapToUserResponse(user)
-            return res
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
             
         @self.router.delete("/user/{id}", summary="Delete user", status_code=status.HTTP_204_NO_CONTENT)
         async def deleteUser(id: int, response: Response) -> None:
             user = self.service.deleteUser(id)
-            response.status_code = status.HTTP_204_NO_CONTENT
-            return user
+            return JSONResponse(content=jsonable_encoder(user), status_code=status.HTTP_204_NO_CONTENT)
