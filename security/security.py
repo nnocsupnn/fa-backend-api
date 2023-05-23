@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI, Depends, status, Request
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException, JWTDecodeError
 from fastapi.routing import APIRouter
@@ -31,6 +31,17 @@ class AuthSecurity:
                 status_code=exc.status_code,
                 content={ "status": exc.status_code, "message": exc.message }
             )
+        
+        '''
+        All Required Security header should be added here.
+        '''
+        @self.app.middleware('http')
+        async def security_headers(request: Request, call_next):
+            response = await call_next(request)
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["X-Frame-Options"] = "DENY"
+            response.headers["Content-Security-Policy"] = "default-src 'self'"
+            return response
             
         return self.app
 

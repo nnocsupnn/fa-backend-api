@@ -1,1 +1,1 @@
-from security.jwt import AuthSecurity
+from security.security import AuthSecurity
