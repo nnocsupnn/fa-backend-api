@@ -97,6 +97,9 @@ class UserAPI(RouteInterface):
             Get user
             '''
             res = self.mapToUserResponse(user)
+            res.user_detail.expenses =  [mapToObject(val, ExpenseResponseJson) for val in user.user_detail.expenses]
+            res.user_detail.incomes =  [mapToObject(val, IncomeResponseJson) for val in user.user_detail.incomes]
+            
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
                 
         

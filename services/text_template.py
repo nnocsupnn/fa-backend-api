@@ -30,7 +30,12 @@ class TextTemplateService:
             "Chief Information Officer (CIO)"
         ]
         
-        industries = []
+        industries = [
+            "Information Technology",
+            "Farming",
+            "Health Care",
+            "Insurance"
+        ]
         
         expenses_categories = [
             "Essentials",
@@ -85,6 +90,7 @@ class TextTemplateService:
                         insert.append(i)
                 
                 db.add_all(insert)
+                        
                 db.commit()
                 db.close()
                 

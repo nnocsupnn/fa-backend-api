@@ -53,10 +53,10 @@ class IncomeProtectionPatchJson(BaseModel):
     date_started: date
     
 class LifestyleProtectionPatchJson(BaseModel):
-    existing_provision: Optional[float] = None
-    source_fund: Optional[float] = None
-    gov_fund: Optional[float] = None
-    other_fund: Optional[float] = None
+    existing_provision: Optional[float] = Field(description="Existing Provision", default=None)
+    source_fund: Optional[float] = Field(description="Source Fund", default=None)
+    gov_fund: Optional[float] = Field(description="Government Fund", default=None)
+    other_fund: Optional[float] = Field(description="Other Fund", default=None)
     
 class LifestyleProtectionInvestmentsPostJson(BaseModel):
     age: int

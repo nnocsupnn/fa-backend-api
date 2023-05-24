@@ -13,6 +13,8 @@ class UserDetail(Base):
     retirement_package = Column(Float(asdecimal=True), index=True)
     life_expectancy = Column(Integer, index=True)
     avg_annual_salary_incr = Column(Float(asdecimal=True), index=True, default=0)
+    max_age_of_dependent = Column(Integer, index=True, default=0)
+    min_age_of_dependent = Column(Integer, index=True, default=0)
     
     user = relationship("User", back_populates=__tablename__, lazy="select")
     incomes = relationship("Incomes", back_populates=__tablename__, lazy="joined")

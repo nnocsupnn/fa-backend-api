@@ -18,14 +18,13 @@ class User(Base):
     active = Column(Boolean, index=True, default=False)
     date_of_birth = Column(Date(), index=True)
     marital = Column(Enum("single", "married", "divorced", "separated", "widowed"), index=True, nullable=False)
-    occupation_id = Column(Integer, ForeignKey('occupation.id'), index=True, nullable=True)
     user_level = Column(Enum("admin", "user"), index=True, default="user", nullable=False)
     deletable = Column(Boolean, index=True, default=False, nullable=False)
     basic_salary = Column(Float(asdecimal=True), index=True, default=0)
     net_salary = Column(Float(asdecimal=True), index=True, default=0)
     
     # Relationships
-    occupation = relationship("Occupation", back_populates="users", lazy="joined")
+    occupation = relationship("Occupation", back_populates=__tablename__, lazy="joined", uselist=False)
     user_detail = relationship("UserDetail", back_populates=__tablename__, lazy="joined", uselist=False)
     dependencies = relationship("Dependencies", back_populates=__tablename__, cascade="all", lazy="joined")
     income_protection = relationship("IncomeProtection", back_populates=__tablename__, cascade="all", lazy="joined", uselist=False)

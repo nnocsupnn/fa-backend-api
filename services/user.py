@@ -34,16 +34,6 @@ class UserService:
     def user(user: UserRegister):
         # Process data below
         with Session() as db:
-            if user.occupation != None:
-                occupation = Occupation(
-                    description=user.occupation.description,
-                    rank=user.occupation.rank,
-                    industry=user.occupation.industry
-                )
-                
-                db.add(occupation)
-                db.commit()
-            
             userModel = User(
                 first_name=user.first_name,
                 last_name=user.last_name,
@@ -51,13 +41,22 @@ class UserService:
                 marital=user.marital,
                 date_of_birth=user.date_of_birth,
                 email_address=user.email_address,
-                occupation_id=occupation.id if user.occupation != None else None,
                 password=user.password,
                 gender=user.gender
             )
             
             db.add(userModel)
             db.commit()
+            
+            if user.occupation != None:
+                occupation = Occupation(
+                    user_id=userModel.id,
+                    description=user.occupation.description if user.occupation.rank != None else None,
+                    rank=user.occupation.rank if user.occupation.rank != None else None,
+                    industry=user.occupation.industry if user.occupation.industry != None else None
+                )
+                
+                db.add(occupation)
             
             # Populate single data per user
             incomeProtection = IncomeProtection(user_id=userModel.id)
@@ -129,6 +128,10 @@ class UserService:
         with Session() as db:
             userModel = db.query(User).filter(User.id == id).first()
             
+            if userModel == None:
+                db.close()
+                raise NoResultFound(f"User with ID ({id}) not found.")
+            
             propertiesFromJoin = ["marital", "occupation", "user_detail"]
             for field_name, field_type in user.__annotations__.items():
                 if field_name in propertiesFromJoin:
@@ -141,12 +144,23 @@ class UserService:
                             if getattr(user.user_detail, deail_field_nae) != None:
                                 setattr(userModel.user_detail, deail_field_nae, getattr(user.user_detail, deail_field_nae))
                                 
-                        
-                    if field_name == "occupation" and user.occupation != None:
+                    if field_name == "occupation" and user.occupation != None and userModel.occupation != None:
                         for occ_field_name, occ_field_type in user.occupation.__annotations__.items():
                             if getattr(user.occupation, occ_field_name) != None:
                                 setattr(userModel.occupation, occ_field_name, getattr(user.occupation, occ_field_name))
-                                
+                    else:
+                        if user.occupation != None and userModel.occupation == None:
+                            occ = Occupation(
+                                user_id=userModel.id,
+                                rank=user.occupation.rank,
+                                industry=user.occupation.industry
+                            )
+                            
+                            db.add(occ)
+                            db.commit()
+                        # for occ_field_name, occ_field_type in user.occupation.__annotations__.items():
+                        #     if getattr(user.occupation, occ_field_name) != None:
+                        #         setattr(userModel.occupation, occ_field_name, getattr(user.occupation, occ_field_name))
                     
                     continue
                 else:

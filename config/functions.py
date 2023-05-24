@@ -49,14 +49,14 @@ def serialize_model(model):
 
 def make_code_string(input_string):
     # Remove non-alphanumeric characters and convert spaces to underscores
-    cleaned_string = re.sub(r'\W+', '', input_string).replace(' ', '_')
+    cleaned_string = re.sub(r'[^a-zA-Z0-9 ]', '', input_string).replace(' ', '_')
 
     # Ensure the resulting string starts with a letter
     if cleaned_string and not cleaned_string[0].isalpha():
         cleaned_string = 'A' + cleaned_string
 
     # Truncate the string to a desired length (e.g., 10 characters)
-    code_string = cleaned_string[:10]
+    code_string = cleaned_string[:len(cleaned_string)]
 
     # Convert the string to uppercase
     code_string = code_string.upper()

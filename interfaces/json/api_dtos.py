@@ -109,7 +109,10 @@ class UserDetail(BaseModel):
     retirement_age: Optional[int] = None
     retirement_package: Optional[float] = None
     life_expectancy: Optional[int] = None
-    avg_annual_salary_incr: Optional[float] = None
+    avg_annual_salary_incr: Optional[float] = Field(description="Average Annual Salary Increase", default=None)
+    max_age_of_dependent: Optional[int] = Field(description="Maximum Age of Dependency", default=None)
+    min_age_of_dependent: Optional[int] = Field(description="Age of Youngest Dependent", default=None)
+    
     
 class UserRegister(BaseModel):
     first_name: str

@@ -124,7 +124,7 @@ class UserDetailResponseJson(BaseModel):
     retirement_package: Optional[float] = None
     retirement_age: Optional[int] = None
     life_expectancy: Optional[int] = None
-    avg_annual_salary_incr: Optional[float] = None
+    avg_annual_salary_incr: Optional[float] = Field(description="Average Annual Salary Increase", default=None)
     expenses: Optional[List[ExpenseResponseJson]] = []
     incomes: Optional[List[IncomeResponseJson]] = []
     

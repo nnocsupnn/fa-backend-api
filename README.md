@@ -24,6 +24,12 @@ python main.py
 python main.py --port 3000
 ```
 
+> You can also trigger populating other data by adding `--prepopulate` = true.
+
+```bash
+python main.py --prepopulate true
+```
+
 ## Once application is running, visit API Docs.
 
 > localhost/api/docs

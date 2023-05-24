@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, func
+from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey
 from sqlalchemy.orm import relationship, validates
 from config.db import Base, SessionLocal, engine
 from models.TextTemplate import TextTemplate
@@ -8,11 +8,13 @@ class Occupation(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     description = Column(String(50), index=True)
+    user_id = Column(Integer, ForeignKey("user.id"), index=True, unique=True)
     rank = Column(String(35), index=True)
     industry = Column(String(35), index=True)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
-    users = relationship("User", back_populates="occupation")
+    
+    user = relationship("User", back_populates=__tablename__, cascade="all", lazy="select")
 
     @staticmethod
     def insert():
