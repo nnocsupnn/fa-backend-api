@@ -17,7 +17,7 @@ class Dependencies(Base):
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     
     user = rel("User", back_populates=__tablename__, cascade="all", lazy="select")
-    dependency_detail = rel("DependencyDetail", back_populates=__tablename__, lazy="joined", cascade="all")
+    dependency_detail = rel("DependencyDetail", back_populates=__tablename__, lazy="joined")
     
     
     @staticmethod

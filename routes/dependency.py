@@ -44,7 +44,7 @@ class DepdenciesAPI(RouteInterface):
             if dependencies == None:
                 raise Exception("Not found.")
             
-            res = [mapToObject(dep, DependenciesResponseJson) for dep in dependencies]
+            res = [mapToObject(dep, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson) for dep in dependencies]
             
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         '''

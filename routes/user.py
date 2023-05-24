@@ -17,7 +17,10 @@ from interfaces.json import User as UserJson, \
     DependenciesResponseJson, \
     IncomeProtectionResponseJson, \
     ExpenseResponseJson, \
-    IncomeResponseJson
+    IncomeResponseJson, \
+    DependenciesResponseJsonFull, \
+    DependencyDetailResponseJson, \
+    DependencyProvisionResponseJson
 from services import UserService
 from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
@@ -46,7 +49,7 @@ class UserAPI(RouteInterface):
         res.wealth = mapToObject(user.wealth, WealthResponseJson) if user.wealth != None else None
         res.user_detail = mapToObject(user.user_detail, UserDetailResponseJson) if user.user_detail != None else None
         res.occupation = mapToObject(user.occupation, OccupationResponseJson) if user.occupation != None else None
-        res.dependencies = [mapToObject(dependecny, DependenciesResponseJson) for dependecny in user.dependencies] if user.dependencies != None else None
+        res.dependencies = [mapToObject(dependecny, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson) for dependecny in user.dependencies] if user.dependencies != None else None
         res.lifestyle_protection = mapToObject(user.lifestyle_protection, LifestyleProtectionResponseJson) if user.lifestyle_protection != None else None
         res.lifestyle_protection_investments = [mapToObject(lifestyle_protection_investment, LifestyleProtectionInvestmentsResponseJson) for lifestyle_protection_investment in user.lifestyle_protection_investments] if user.dependencies != None else None
         res.income_protection = mapToObject(user.income_protection, IncomeProtectionResponseJson) if user.income_protection != None else None
@@ -70,7 +73,7 @@ class UserAPI(RouteInterface):
             res = self.mapToUserResponse(user)
             res.user_detail.expenses =  [mapToObject(val, ExpenseResponseJson) for val in user.user_detail.expenses]
             res.user_detail.incomes =  [mapToObject(val, IncomeResponseJson) for val in user.user_detail.incomes]
-            
+
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         
         @self.router.get("/users", summary="Get all users", description="Note: this route is for `admin` role user.")

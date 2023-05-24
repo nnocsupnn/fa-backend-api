@@ -12,21 +12,20 @@ class DependencyDetail(Base):
     # target_years = Column(Integer, index=True)
     target_entry_age = Column(Integer, index=True)
     age_before_entry = Column(Integer, index=True)
-    primary_lvl_annual = Column(Float, index=True, nullable=False)
-    secondary_lvl_annual = Column(Float, index=True, nullable=False)
-    tertiary_lvl_annual = Column(Float, index=True, nullable=False)
+    primary_lvl_annual = Column(Float, index=True, default=0, nullable=False)
+    secondary_lvl_annual = Column(Float, index=True, default=0, nullable=False)
+    tertiary_lvl_annual = Column(Float, index=True, default=0,nullable=False)
     
-    primary_lvl_years = Column(Integer, index=True)
-    secondary_lvl_years = Column(Integer, index=True)
-    tertiary_lvl_years = Column(Integer, index=True)
+    primary_lvl_years = Column(Integer, default=0, index=True)
+    secondary_lvl_years = Column(Integer, default=0, index=True)
+    tertiary_lvl_years = Column(Integer, default=0, index=True)
     
-    tuition_fee_incr_perc = Column(Float, index=True, nullable=False)
+    tuition_fee_incr_perc = Column(Float, default=0, index=True, nullable=False)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     
-    dependencies = relationship("Dependencies", back_populates=__tablename__, cascade="all", lazy="select")
+    dependencies = relationship("Dependencies", back_populates=__tablename__, cascade="all", lazy="joined")
     dependency_provision = relationship("DependencyProvision", back_populates=__tablename__, lazy="joined")
-    dependencies = relationship("Dependencies", back_populates=__tablename__, lazy="select")
     
     @staticmethod
     def getDetail(id: int):

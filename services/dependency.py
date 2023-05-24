@@ -9,17 +9,36 @@ class DependencyService:
     # get all
     def getDependencies(id: int):
         db = Session()
-        dependencies = db.query(Dependencies).where(Dependencies.user_id == id).all()
+        dependencies = db.query(Dependencies).filter(Dependencies.user_id == id).all()
         return dependencies
     
     # post
     def dependency(id: int, dependecy: DependenciesJson):
+        dep_prov = DependencyProvision(amount=0)
+        
+        with Session() as db:
+            db.add(dep_prov)
+            db.commit()
+            db.refresh(dep_prov)
+            db.close()
+        
+        dep_det = DependencyDetail(
+            dependency_provision_id=dep_prov.id
+        )
+        
+        with Session() as db:
+            db.add(dep_det)
+            db.commit()
+            db.refresh(dep_det)
+            db.close()
+        
         dep = Dependencies(
             user_id=id,
             name=dependecy.name,
             gender=dependecy.gender,
             relationship=dependecy.relationship,
-            date_of_birth=dependecy.date_of_birth
+            date_of_birth=dependecy.date_of_birth,
+            dependency_detail_id=dep_det.id
         )
         
         with Session() as db:
