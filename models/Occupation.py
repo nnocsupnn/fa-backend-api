@@ -31,6 +31,8 @@ class Occupation(Base):
         return
 
     def validator(self, key, code):
+        if code == None:
+            return
         with SessionLocal() as db:
             tt = db.query(TextTemplate).filter(TextTemplate.code == code).count()
             db.close()

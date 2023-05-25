@@ -66,6 +66,7 @@ class DependencyDetailService:
     def updateDependency(id: int, request: DependencyDetailJson):
         result = None
         with Session() as db:
+            print(request)
             # dep = dependency.dependency_detail
             stmt = select(DependencyDetail).join(Dependencies).where(Dependencies.id == id)
             dep = db.execute(stmt).first()[0]

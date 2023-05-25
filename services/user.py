@@ -146,7 +146,7 @@ class UserService:
                                 
                     if field_name == "occupation" and user.occupation != None and userModel.occupation != None:
                         for occ_field_name, occ_field_type in user.occupation.__annotations__.items():
-                            if getattr(user.occupation, occ_field_name) != None:
+                            if getattr(user.occupation, occ_field_name) != None:        
                                 setattr(userModel.occupation, occ_field_name, getattr(user.occupation, occ_field_name))
                     else:
                         if user.occupation != None and userModel.occupation == None:
