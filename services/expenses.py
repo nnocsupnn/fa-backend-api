@@ -42,9 +42,9 @@ class ExpensesServices:
                 expense_amount=expense.expense_amount,
                 expense_category=expense.expense_category,
                 description=expense.description,
-                expense_started_date=expense.expense_started_date if expense.expense_started_date != None else 0,
-                expense_end_date=expense.expense_end_date if expense.expense_end_date != None else 0,
-                active=expense.active if expense.active != None else 0,
+                expense_started_date=expense.expense_started_date if expense.expense_started_date != None else None,
+                expense_end_date=expense.expense_end_date if expense.expense_end_date != None else None,
+                active=expense.active if expense.active != None else 1,
             )
             
             db.add(result)

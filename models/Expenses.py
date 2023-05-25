@@ -12,9 +12,9 @@ class Expenses(Base):
     expense_amount = Column(Float, index=True, nullable=False)
     expense_category = Column(String(30), index=True, nullable=False)
     description = Column(String(50), index=True)
-    expense_started_date = Column(DateTime, index=True)
-    expense_end_date = Column(DateTime, index=True)
-    active = Column(Integer, index=True)
+    expense_started_date = Column(DateTime, index=True, nullable=True)
+    expense_end_date = Column(DateTime, index=True, nullable=True)
+    active = Column(Integer, index=True, default=1)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     
