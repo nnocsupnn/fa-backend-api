@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum, DateTime, Date, func
-from sqlalchemy.orm import relationship as rel
-
+from sqlalchemy.orm import relationship as rel, joinedload
+from models import DependencyDetail
 from config.db import Base, SessionLocal, engine
 
 class Dependencies(Base):
@@ -27,7 +27,13 @@ class Dependencies(Base):
         db.close()
         return dependencies
     
-
+    @staticmethod
+    def getDependencyJoined(id: int):
+        db = SessionLocal()
+        dependency = db.query(Dependencies).options(joinedload(DependencyDetail)).filter(Dependencies.id == id).first()
+        db.close()
+        return dependency
+    
     @staticmethod
     def getDependency(id: int):
         db = SessionLocal()

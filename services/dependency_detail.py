@@ -66,14 +66,14 @@ class DependencyDetailService:
     def updateDependency(id: int, request: DependencyDetailJson):
         result = None
         with Session() as db:
-            print(request)
             # dep = dependency.dependency_detail
             stmt = select(DependencyDetail).join(Dependencies).where(Dependencies.id == id)
-            dep = db.execute(stmt).first()[0]
+            dep = db.execute(stmt).first()
             
             if dep == None:
                 raise Exception("DependencyDetail not exists.")
             
+            dep = dep[0]
             for field_name, field_type in request.__annotations__.items():
                 if getattr(request, field_name) != None and field_name != "dependency_provision":
                     setattr(dep, field_name, getattr(request, field_name))
