@@ -53,14 +53,15 @@ class DepdenciesAPI(RouteInterface):
         async def postDependency(request: DependenciesPostJson, response: Response, auth: AuthJWT = Depends()) -> List[DependenciesResponseJson]:
             userId = auth.get_jwt_subject()
             self.service.dependency(userId, request)
-            res = [mapToObject(dep, DependenciesResponseJson) for dep in Dependencies.getDependencies()]
+            res = [mapToObject(dep, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson) for dep in Dependencies.getDependencies()]
+            print(len(res))
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_201_CREATED)
         '''
         '''     
         @self.router.patch("/dependency/{dependencyId}", summary="Updating dependency")
         async def updateDependency(dependencyId: int, request: DependenciesJson, response: Response):
             dependency = self.service.updateDependency(dependencyId, request)
-            res = mapToObject(dependency, DependenciesResponseJson) if dependency != None else DependenciesResponseJson()
+            res = mapToObject(dependency, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson) if dependency != None else DependenciesResponseJson()
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         '''
         '''   

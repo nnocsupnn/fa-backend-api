@@ -51,8 +51,8 @@ class DependencyDetail(BaseModel):
     secondary_lvl_annual: Optional[float] = None
     tertiary_lvl_annual: Optional[float] = None
     primary_lvl_years: Optional[int] = None
-    secondary_lvll_years: Optional[int] = None
-    tertiary_lvll_years: Optional[int] = None
+    secondary_lvl_years: Optional[int] = None
+    tertiary_lvl_years: Optional[int] = None
     tuition_fee_incr_perc: Optional[float] = None
     dependency_provision: Optional[DependencyProvision] = None
     
