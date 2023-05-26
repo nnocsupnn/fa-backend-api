@@ -74,8 +74,14 @@ class WealthPatchJson(BaseModel):
     liquid_investments_value: Optional[float] = None
     projected_apprec_rate_per_year: Optional[float] = None
     projected_rate_return_on_fixed: Optional[float] = None
+    other_investment_value: Optional[float] = None
     tax_rate: Optional[float] = None
     
 class KapritsoPatchJson(BaseModel):
     factor: Optional[float] = None
     daily_cost: Optional[float] = None
+    
+class ConfigPatchJson(BaseModel):
+    inflation_rate: Optional[float] = None
+    deduction_from_family_home: Optional[float] = None
+    other_deduction: Optional[float] = None
