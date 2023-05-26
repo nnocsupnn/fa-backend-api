@@ -5,7 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from config.db import Base, SessionLocal, engine
-from config.functions import nullCheckingResponse
 from config.exception_handlers import fa_exception_handler, ex_fa_exception_handler, nr_exception_handler
 from routes import *
 from security import AuthSecurity

@@ -145,3 +145,11 @@ def mapToObjectA(source, dest, objects, current = None, fields = []) -> any:
     
     return current
     
+def calculate_age(date_string):
+    year, month, day = map(int, str(date_string).split('-'))
+    current_date = date.today()
+    age = current_date.year - year
+    if (current_date.month, current_date.day) < (month, day):
+        age -= 1
+    
+    return age

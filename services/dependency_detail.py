@@ -5,6 +5,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy import select
 from interfaces.json.api_dtos import User as UserJson, UserRegister, DependencyDetailPostJson, DependencyDetail as DependencyDetailJson
 from config.db import SessionLocal as Session
+from config.functions import calculate_age
 
 class DependencyDetailService:
     # get all
@@ -26,6 +27,11 @@ class DependencyDetailService:
         
         depDetail = None
         if dep.dependency_detail_id == None:
+            
+            depAge = calculate_age(dep.date_of_birth)
+            if dependecy.target_entry_age <= depAge:
+                raise Exception("Your target age is invalid. it should be higher your current age")
+            
             depDetail = DependencyDetail(
                 target_entry_age=dependecy.target_entry_age,
                 age_before_entry=dependecy.age_before_entry,
@@ -67,6 +73,7 @@ class DependencyDetailService:
         result = None
         with Session() as db:
             # dep = dependency.dependency_detail
+            dependency = db.query(Dependencies).filter(Dependencies.id == id).first()
             stmt = select(DependencyDetail).join(Dependencies).where(Dependencies.id == id)
             dep = db.execute(stmt).first()
             
@@ -74,6 +81,12 @@ class DependencyDetailService:
                 raise Exception("DependencyDetail not exists.")
             
             dep = dep[0]
+            
+            depAge = calculate_age(dependency.date_of_birth)
+            if request.target_entry_age != None and request.target_entry_age <= depAge:
+                db.close()
+                raise Exception("Your target age is invalid. it should be higher your current age")
+            
             for field_name, field_type in request.__annotations__.items():
                 if getattr(request, field_name) != None and field_name != "dependency_provision":
                     setattr(dep, field_name, getattr(request, field_name))

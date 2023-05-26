@@ -54,7 +54,7 @@ class DepdenciesAPI(RouteInterface):
             userId = auth.get_jwt_subject()
             self.service.dependency(userId, request)
             res = [mapToObject(dep, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson) for dep in Dependencies.getDependencies()]
-            print(len(res))
+            
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_201_CREATED)
         '''
         '''     
