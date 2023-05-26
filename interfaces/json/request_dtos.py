@@ -82,6 +82,6 @@ class KapritsoPatchJson(BaseModel):
     daily_cost: Optional[float] = None
     
 class ConfigPatchJson(BaseModel):
-    inflation_rate: Optional[float] = None
-    deduction_from_family_home: Optional[float] = None
-    other_deduction: Optional[float] = None
+    inflation_rate: float
+    deduction_from_family_home: float
+    other_deduction: float

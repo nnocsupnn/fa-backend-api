@@ -9,7 +9,7 @@ from config.functions import nullCheckingResponse
 from config.exception_handlers import fa_exception_handler, ex_fa_exception_handler, nr_exception_handler
 from routes import *
 from security import AuthSecurity
-from services import TextTemplateService as Templates
+from services import TextTemplateService as Templates, ConfigService
 from argparse import ArgumentParser
 
 # Intialize db (DDL)
@@ -28,8 +28,10 @@ args = parser.parse_args()
 Argument Configs
 '''
 PORT = args.port
+API_BASE_PREFIX = "/fa/api"
 if args.prepopulate:
     Templates.prepopulateTemplates()
+    ConfigService.initializeConfig()
 
     
 app = FastAPI(
@@ -62,7 +64,7 @@ app = authSecurity.getApp()
 After creating the routes services, you need to add the API Class here under resource var 
 to automatically include in the registered routes
 '''
-resource = [
+resources = [
     UserAPI, 
     UserDetailAPI, 
     TextTemplateAPI, 
@@ -73,7 +75,8 @@ resource = [
     IncomeProtectionAPI,
     LifestyleProtectionAPI,
     WealthAPI,
-    KapritsoAPI
+    KapritsoAPI,
+    ConfigAPI
 ]
 
 '''
@@ -82,18 +85,18 @@ just to not include the auth module
 '''
 app.include_router(TestAPI(SessionLocal).router, tags=["maintenance"])
 app.include_router(AuthAPI(SessionLocal).router, tags=["AuthenticationAPI"])
-app.include_router(RegistrationAPI(SessionLocal).router, tags=["RegistrationAPI"], prefix="/fa/api")
+app.include_router(RegistrationAPI(SessionLocal).router, tags=["RegistrationAPI"], prefix=API_BASE_PREFIX)
 
 
 '''
 Run all API Classes to registered to our main router
 '''
-for instance in resource:
+for instance in resources:
     app.add_exception_handler(Exception, ex_fa_exception_handler)
     app.add_exception_handler(NoResultFound, nr_exception_handler)
     app.add_exception_handler(IntegrityError, fa_exception_handler)
     
-    app.include_router(instance(SessionLocal).router, dependencies=[Depends(authSecurity.auth_user)], prefix="/fa/api", tags=[instance.__name__])
+    app.include_router(instance(SessionLocal).router, dependencies=[Depends(authSecurity.auth_user)], prefix=API_BASE_PREFIX, tags=[instance.__name__])
 
 
 # Start Server

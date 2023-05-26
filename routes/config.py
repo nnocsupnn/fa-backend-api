@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from models import LifestyleProtection, LifestyleProtectionInvestments
 from sqlalchemy.orm import joinedload
 from interfaces.route_interface import RouteInterface
-from interfaces.json import KapritsoPatchJson, KapritsoResponseJson
+from interfaces.json import ConfigResponseJson, ConfigPatchJson
 from services import ConfigService
 from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
@@ -31,5 +31,13 @@ class ConfigAPI(RouteInterface):
     
     def setup_routes(self):
         @self.router.get("/config")
-        async def config():
-            pass
+        async def config() -> ConfigResponseJson:
+            config = self.service.getConfig()
+            res = mapToObject(config, ConfigResponseJson)
+            return res
+        
+        @self.router.patch("/config")
+        async def updateConfig(config: ConfigPatchJson):
+            config = self.service.updateConfig(config)
+            # res = mapToObject(config, ConfigResponseJson)
+            return config
