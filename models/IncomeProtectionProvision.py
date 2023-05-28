@@ -8,7 +8,7 @@ class IncomeProtectionProvision(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     income_protection_id = Column(Integer, ForeignKey("income_protection.id"), index=True)
-    amount = Column(Float, index=True)
+    amount = Column(Float, index=True, default=0)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     

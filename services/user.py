@@ -60,7 +60,9 @@ class UserService:
             
             # Populate single data per user
             incomeProtection = IncomeProtection(user_id=userModel.id)
+            db.add(incomeProtection)
             db.commit()
+            
             incomeProtectionProvision = IncomeProtectionProvision(income_protection_id=incomeProtection.id)
             
             db.add(incomeProtectionProvision)
@@ -110,7 +112,7 @@ class UserService:
             else:
                 userDetail = UserDetail(
                     user_id=userModel.id,
-                    year_business=1990,
+                    year_business=0,
                     retirement_age=65,
                     retirement_package=0,
                     life_expectancy=0

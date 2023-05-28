@@ -83,3 +83,12 @@ class IncomeProtectionService:
             db.close()
             
         return result
+    
+    def deleteIncomeProtectionProvision(incomeProtectionId: int, incomeProtectionProvisionId: int):
+        with Session() as db:
+            db.query(IncomeProtectionProvision).where(IncomeProtectionProvision.id == incomeProtectionProvisionId, IncomeProtectionProvision.income_protection_id == incomeProtectionId).delete()
+            db.commit()
+            db.close()
+            
+        return True
+            

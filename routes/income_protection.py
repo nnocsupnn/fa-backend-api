@@ -38,6 +38,7 @@ class IncomeProtectionAPI(RouteInterface):
             userId = auth.get_jwt_subject()
             
             incomeProtection = self.service.incomeProtections(userId)
+            print(incomeProtection)
             res = mapToObject(incomeProtection, IncomeProtectionResponseJson)
             res.income_protection_provision = [mapToObject(prov, IncomeProtectionProvisionResponseJson) for prov in incomeProtection.income_protection_provision]
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
@@ -70,3 +71,11 @@ class IncomeProtectionAPI(RouteInterface):
             
             res = mapToObject(incomeProtection, IncomeProtectionProvisionResponseJson)
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_202_ACCEPTED)
+        '''
+        '''
+        @self.router.delete("/income-protection/{incomeProtectionId}/provision/{incomeProtectionProvisionId}", summary="Delete income protection provision")
+        async def updateIncomeProtection(incomeProtectionId: int, incomeProtectionProvisionId: int, response: Response) -> IncomeProtectionProvisionResponseJson:
+            self.service.deleteIncomeProtectionProvision(incomeProtectionId, incomeProtectionProvisionId)
+            
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return True
