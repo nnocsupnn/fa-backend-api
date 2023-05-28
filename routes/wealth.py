@@ -40,9 +40,10 @@ class WealthAPI(RouteInterface):
             return res
         '''
         '''
-        @self.router.patch("/wealth/{wealthId}", summary="Update Wealth")
-        async def getWealth(wealthId: int, request: WealthPatchJson, response: Response) -> WealthResponseJson:
-            
-            wealth = self.service.updateWealth(wealthId, request)
+        @self.router.patch("/wealth", summary="Update Wealth")
+        async def getWealth(request: WealthPatchJson, response: Response, auth: AuthJWT = Depends()) -> WealthResponseJson:
+            auth.jwt_required()
+            userId = auth.get_jwt_subject()
+            wealth = self.service.updateWealth(userId, request)
             res = mapToObject(wealth, WealthResponseJson) if wealth != None else WealthResponseJson()
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)

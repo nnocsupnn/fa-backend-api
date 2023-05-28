@@ -15,10 +15,10 @@ class WealthService:
             
         return result
     
-    def updateWealth(wealthId: int, wealth: WealthPatchJson):
+    def updateWealth(userId: int, wealth: WealthPatchJson):
         result = None
         with Session() as db:
-            result = db.query(Wealth).filter(Wealth.id == wealthId).first()
+            result = db.query(Wealth).filter(Wealth.user_id == userId).first()
             
             for field, value in vars(wealth).items():
                 if hasattr(result, field) and value != None:
