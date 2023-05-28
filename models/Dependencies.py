@@ -28,6 +28,13 @@ class Dependencies(Base):
         return dependencies
     
     @staticmethod
+    def getDependenciesByUserId(userId: int):
+        db = SessionLocal()
+        dependencies = db.query(Dependencies).where(Dependencies.user_id == userId).all()
+        db.close()
+        return dependencies
+    
+    @staticmethod
     def getDependencyJoined(id: int):
         db = SessionLocal()
         dependency = db.query(Dependencies).options(joinedload(DependencyDetail)).filter(Dependencies.id == id).first()

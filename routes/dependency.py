@@ -53,7 +53,7 @@ class DepdenciesAPI(RouteInterface):
         async def postDependency(request: DependenciesPostJson, response: Response, auth: AuthJWT = Depends()) -> List[DependenciesResponseJson]:
             userId = auth.get_jwt_subject()
             self.service.dependency(userId, request)
-            res = [mapToObject(dep, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson) for dep in Dependencies.getDependencies()]
+            res = [mapToObject(dep, DependenciesResponseJsonFull, DependencyDetailResponseJson, DependencyProvisionResponseJson) for dep in Dependencies.getDependenciesByUserId(userId=userId)]
             
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_201_CREATED)
         '''

@@ -57,16 +57,15 @@ class LifestyleProtectionPatchJson(BaseModel):
     source_fund: Optional[float] = Field(description="Source Fund", default=None)
     gov_fund: Optional[float] = Field(description="Government Fund", default=None)
     other_fund: Optional[float] = Field(description="Other Fund", default=None)
+    projection_rate: float
     
 class LifestyleProtectionInvestmentsPostJson(BaseModel):
     age: int
     annual_investment: float
-    projection_rate: float
     
 class LifestyleProtectionInvestmentsPatchJson(BaseModel):
-    age: Optional[int] = None
+    age: int
     annual_investment: float
-    projection_rate: float
     
 class WealthPatchJson(BaseModel):
     real_properties_value: Optional[float] = None
@@ -76,6 +75,7 @@ class WealthPatchJson(BaseModel):
     projected_rate_return_on_fixed: Optional[float] = None
     other_investment_value: Optional[float] = None
     tax_rate: Optional[float] = None
+    current_provision: Optional[float] = None
     
 class KapritsoPatchJson(BaseModel):
     factor: Optional[float] = None

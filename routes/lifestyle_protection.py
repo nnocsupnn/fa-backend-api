@@ -69,9 +69,25 @@ class LifestyleProtectionAPI(RouteInterface):
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
         '''
         '''
-        @self.router.patch("/lifestyle-protection/investment/{investmentId}", summary="Update lifestyle protection investments")
-        async def updateLifestyleProtectionInvestments(investmentId: int, request: LifestyleProtectionInvestmentsPatchJson, response: Response) -> LifestyleProtectionInvestmentsResponseJson:
-            investment = self.service.updateInvestment(investmentId, request)
+        @self.router.patch("/lifestyle-protection/investment", summary="Update lifestyle protection investment")
+        async def updateLifestyleProtectionInvestments(request: LifestyleProtectionInvestmentsPatchJson, response: Response, auth: AuthJWT = Depends()) -> LifestyleProtectionInvestmentsResponseJson:
+            auth.jwt_required()
+            
+            userId = auth.get_jwt_subject()
+            investment = self.service.updateInvestment(userId, request)
+            
+            res = mapToObject(investment, LifestyleProtectionInvestmentsResponseJson)
+            
+            return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)
+        '''
+        '''
+        @self.router.put("/lifestyle-protection/investment", summary="Update lifestyle protection investment")
+        async def updateLifestyleProtectionInvestments(request: LifestyleProtectionInvestmentsPatchJson, response: Response, auth: AuthJWT = Depends()) -> LifestyleProtectionInvestmentsResponseJson:
+            auth.jwt_required()
+            
+            userId = auth.get_jwt_subject()
+            investment = self.service.updateInvestment(userId, request)
+            
             res = mapToObject(investment, LifestyleProtectionInvestmentsResponseJson)
             
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_200_OK)

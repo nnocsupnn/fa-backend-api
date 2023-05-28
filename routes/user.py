@@ -20,7 +20,8 @@ from interfaces.json import User as UserJson, \
     IncomeResponseJson, \
     DependenciesResponseJsonFull, \
     DependencyDetailResponseJson, \
-    DependencyProvisionResponseJson
+    DependencyProvisionResponseJson, \
+    IncomeProtectionProvisionResponseJson
 from services import UserService
 from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
@@ -53,6 +54,7 @@ class UserAPI(RouteInterface):
         res.lifestyle_protection = mapToObject(user.lifestyle_protection, LifestyleProtectionResponseJson) if user.lifestyle_protection != None else None
         res.lifestyle_protection_investments = [mapToObject(lifestyle_protection_investment, LifestyleProtectionInvestmentsResponseJson) for lifestyle_protection_investment in user.lifestyle_protection_investments] if user.dependencies != None else None
         res.income_protection = mapToObject(user.income_protection, IncomeProtectionResponseJson) if user.income_protection != None else None
+        res.income_protection.income_protection_provision = [mapToObject(prov, IncomeProtectionProvisionResponseJson) for prov in user.income_protection.income_protection_provision]
         
         return res
     

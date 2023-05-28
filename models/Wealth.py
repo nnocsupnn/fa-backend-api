@@ -15,6 +15,7 @@ class Wealth(Base):
     projected_rate_return_on_fixed = Column(Float(asdecimal=True), index=True, default=0)
     tax_rate = Column(Float(asdecimal=True), index=True, nullable=False, default=0)
     other_investment_value = Column(Float(asdecimal=True), index=True, nullable=True, default=0)
+    current_provision = Column(Float(asdecimal=True), index=True, nullable=True, default=0)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     

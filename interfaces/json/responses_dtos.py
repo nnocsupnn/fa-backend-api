@@ -153,16 +153,16 @@ class LifestyleProtectionResponseJson(BaseModel):
     user_id: Optional[int] = None
     source_fund: Optional[float] = None
     other_fund: Optional[float] = None
-    updated_date: Optional[datetime] = None
     existing_provision: Optional[float] = None
     gov_fund: Optional[float] = None
+    projection_rate: Optional[float] = None
     created_date: Optional[datetime] = None
+    updated_date: Optional[datetime] = None
     
 class LifestyleProtectionInvestmentsResponseJson(BaseModel):
     id: Optional[int] = None
     user_id: Optional[int] = None
     age: Optional[int] = None
-    projection_rate: Optional[float] = None
     annual_investment: Optional[float] = None
     created_date: Optional[datetime] = None
     updated_date: Optional[datetime] = None
@@ -196,6 +196,7 @@ class WealthResponseJson(BaseModel):
     projected_rate_return_on_fixed: Optional[float] = None
     other_investment_value: Optional[float] = None
     tax_rate: Optional[float] = None
+    current_provision: Optional[float] = None
     created_date: Optional[datetime] = None
     updated_date: Optional[datetime] = None
     

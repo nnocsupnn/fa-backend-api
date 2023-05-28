@@ -12,6 +12,7 @@ class LifestyleProtection(Base):
     source_fund = Column(Float, index=True, nullable=False)
     gov_fund = Column(Float, index=True, nullable=False)
     other_fund = Column(Float, index=True, nullable=False)
+    projection_rate = Column(Float, index=True, nullable=False, default=0)
     
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())

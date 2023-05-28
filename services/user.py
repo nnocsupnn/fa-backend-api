@@ -73,7 +73,8 @@ class UserService:
                 existing_provision=0,
                 source_fund=0,
                 gov_fund=0,
-                other_fund=0
+                other_fund=0,
+                projection_rate=0
             )
             
             db.add(lifestyle_protection)

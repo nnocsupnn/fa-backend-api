@@ -69,14 +69,21 @@ class LifestyleProtectionService:
             
         return result
     
-    def updateInvestment(investmentId: int, investment: LifestyleProtectionInvestmentsPatchJson):
+    def updateInvestment(userId: int, investment: LifestyleProtectionInvestmentsPatchJson):
         result = None
         
         with Session() as db:
-            invstmnt = db.query(LifestyleProtectionInvestments).filter(LifestyleProtectionInvestments.id == investmentId).first()
+            invstmnt = db.query(LifestyleProtectionInvestments).filter(LifestyleProtectionInvestments.user_id == userId, LifestyleProtectionInvestments.age == investment.age).first()
             
+            if invstmnt == None:
+                model = LifestyleProtectionInvestments(user_id=userId)
+                db.add(model)
+                db.commit()
+                invstmnt = db.query(LifestyleProtectionInvestments).filter(LifestyleProtectionInvestments.user_id == userId, LifestyleProtectionInvestments.age == investment.age).first()
+                
+                
             for field, value in vars(investment).items():
-                if hasattr(invstmnt, field) and value != None:
+                if hasattr(invstmnt, field) and value != None and field != "age":
                     setattr(invstmnt, field, value)
                     
                     
