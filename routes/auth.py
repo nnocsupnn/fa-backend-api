@@ -9,7 +9,7 @@ from datetime import timedelta, datetime
 '''
 '''
 class AuthAPI(RouteInterface):
-    ACCESS_TOKEN_EXPIRY_DAYS = 5
+    ACCESS_TOKEN_EXPIRY_DAYS = 1
     REFRESH_TOKEN_EXPIRY_DAYS = 7
     TOKEN_ALGORITHM = "HS256"
 
@@ -21,7 +21,7 @@ class AuthAPI(RouteInterface):
         
     def generate_access_token(self, userId: int, auth: AuthJWT) -> GeneratedTokenPayload:
         payload = userId
-        expires = timedelta(seconds=self.ACCESS_TOKEN_EXPIRY_DAYS)
+        expires = timedelta(days=self.ACCESS_TOKEN_EXPIRY_DAYS)
         access_token = auth.create_access_token(subject=payload, expires_time=expires, algorithm=self.TOKEN_ALGORITHM)
         return GeneratedTokenPayload(token=access_token, expires=(datetime.now() + expires).timestamp())
 
