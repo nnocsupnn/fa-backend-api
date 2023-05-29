@@ -76,10 +76,10 @@ class LifestyleProtectionService:
             invstmnt = db.query(LifestyleProtectionInvestments).filter(LifestyleProtectionInvestments.user_id == userId, LifestyleProtectionInvestments.age == investment.age).first()
             
             if invstmnt == None:
-                model = LifestyleProtectionInvestments(user_id=userId)
+                model = LifestyleProtectionInvestments(user_id=userId, age=investment.age, annual_investment=investment.annual_investment)
                 db.add(model)
                 db.commit()
-                invstmnt = db.query(LifestyleProtectionInvestments).filter(LifestyleProtectionInvestments.user_id == userId, LifestyleProtectionInvestments.age == investment.age).first()
+                invstmnt = db.query(LifestyleProtectionInvestments).filter(LifestyleProtectionInvestments.id == model.id).first()
                 
                 
             for field, value in vars(investment).items():
