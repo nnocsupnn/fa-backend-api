@@ -146,5 +146,7 @@ class Dependencies(BaseModel):
     relationship: Optional[Relationship] = None
     date_of_birth: Optional[date] = None
     
-
+class GeneratedTokenPayload(BaseModel):
+    token: str
+    expires: int
     

@@ -181,6 +181,7 @@ class JwtResponseJson(BaseModel):
     accessToken: str
     refreshToken: str
     expires: int
+    refreshTokenExpires: Optional[int] = None
     
 class SuccessResponseJson(BaseModel):
     status: Optional[int] = 200
