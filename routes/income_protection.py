@@ -74,7 +74,7 @@ class IncomeProtectionAPI(RouteInterface):
         '''
         '''
         @self.router.delete("/income-protection/{incomeProtectionId}/provision/{incomeProtectionProvisionId}", summary="Delete income protection provision")
-        async def updateIncomeProtection(incomeProtectionId: int, incomeProtectionProvisionId: int, response: Response) -> IncomeProtectionProvisionResponseJson:
+        async def updateIncomeProtection(incomeProtectionId: int, incomeProtectionProvisionId: int, response: Response):
             self.service.deleteIncomeProtectionProvision(incomeProtectionId, incomeProtectionProvisionId)
             
             response.status_code = status.HTTP_204_NO_CONTENT
