@@ -137,6 +137,7 @@ class User(BaseModel):
     user_detail: Optional[UserDetail] = None
     user_level: Optional[str] = None
     active: Optional[int] = None
+    gender: Optional[str] = None
     basic_salary: Optional[float] = None
     net_salary: Optional[float] = None
     

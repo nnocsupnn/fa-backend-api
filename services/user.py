@@ -167,7 +167,7 @@ class UserService:
                     
                     continue
                 else:
-                    if getattr(user, field_name) != None:
+                    if hasattr(userModel, field_name) and getattr(user, field_name) != None:
                         setattr(userModel, field_name, getattr(user, field_name))
                 
             db.commit()
