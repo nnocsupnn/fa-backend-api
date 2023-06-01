@@ -246,6 +246,7 @@ class ConfigResponseJson(BaseModel):
     inflation_rate: Optional[float] = None
     other_deduction: Optional[float] = None
     deduction_from_family_home: Optional[float] = None
+    currency: Optional[str] = None
     created_date: Optional[datetime] = None
     updated_date: Optional[datetime] = None
     
