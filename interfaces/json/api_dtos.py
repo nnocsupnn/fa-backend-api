@@ -23,6 +23,7 @@ class Relationship(str, Enum):
     sister = "sister"
     brother = "brother"
     wife = "wife"
+    others = "others"
     
 class Marital(str, Enum):
     single = "single"
