@@ -50,7 +50,6 @@ class IncomeAPI(RouteInterface):
             userId = auth.get_jwt_subject()
             income = self.service.saveIncome(userId, request)
             
-            print(income)
             res = mapToObject(income, IncomeResponseJson)
             return JSONResponse(content=jsonable_encoder(res), status_code=status.HTTP_201_CREATED)
         '''

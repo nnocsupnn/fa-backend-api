@@ -82,10 +82,10 @@ class DependencyDetailService:
             
             dep = dep[0]
             
-            depAge = calculate_age(dependency.date_of_birth)
-            if request.target_entry_age != None and request.target_entry_age <= depAge:
-                db.close()
-                raise Exception("Your target age is invalid. it should be higher your current age")
+            # depAge = calculate_age(dependency.date_of_birth)
+            # if request.target_entry_age != None and request.target_entry_age <= depAge:
+            #     db.close()
+            #     raise Exception("Your target age is invalid. it should be higher your current age")
             
             for field_name, field_type in request.__annotations__.items():
                 if getattr(request, field_name) != None and field_name != "dependency_provision":
