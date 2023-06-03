@@ -11,10 +11,14 @@ class Wealth(Base):
     real_properties_value = Column(Float, index=True, default=0)
     personal_properties_value = Column(Float, index=True, default=0)
     liquid_investments_value = Column(Float(asdecimal=True), index=True, default=0)
-    projected_apprec_rate_per_year = Column(Float(asdecimal=True), index=True, default=0)
-    projected_rate_return_on_fixed = Column(Float(asdecimal=True), index=True, default=0)
-    tax_rate = Column(Float(asdecimal=True), index=True, nullable=False, default=0)
     other_investment_value = Column(Float(asdecimal=True), index=True, nullable=True, default=0)
+    
+    projected_rate_personal_properties = Column(Float(asdecimal=True), index=True, default=0)
+    projected_rate_real_properties = Column(Float(asdecimal=True), index=True, default=0)
+    projected_rate_liquid_investment = Column(Float(asdecimal=True), index=True, default=0)
+    projected_rate_other_investment = Column(Float(asdecimal=True), index=True, default=0)
+    
+    tax_rate = Column(Float(asdecimal=True), index=True, nullable=False, default=0)
     current_provision = Column(Float(asdecimal=True), index=True, nullable=True, default=0)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())

@@ -84,8 +84,6 @@ class UserService:
                 real_properties_value = 0,
                 personal_properties_value = 0,
                 liquid_investments_value = 0,
-                projected_apprec_rate_per_year = 2,
-                projected_rate_return_on_fixed = 5,
                 tax_rate = 1
             )
             

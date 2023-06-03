@@ -71,11 +71,13 @@ class WealthPatchJson(BaseModel):
     real_properties_value: Optional[float] = None
     personal_properties_value: Optional[float] = None
     liquid_investments_value: Optional[float] = None
-    projected_apprec_rate_per_year: Optional[float] = None
-    projected_rate_return_on_fixed: Optional[float] = None
     other_investment_value: Optional[float] = None
     tax_rate: Optional[float] = None
     current_provision: Optional[float] = None
+    projected_rate_personal_properties: Optional[float] = None
+    projected_rate_real_properties: Optional[float] = None
+    projected_rate_liquid_investment: Optional[float] = None
+    projected_rate_other_investment: Optional[float] = None
     
 class KapritsoPatchJson(BaseModel):
     factor: Optional[float] = None
