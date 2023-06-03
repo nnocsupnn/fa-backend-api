@@ -43,6 +43,7 @@ class TextTemplateService:
             "Optional",
             "Educational Expense",
             "Amortizations"
+            "Educational"
         ]
         
         with Session() as db:
