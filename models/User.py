@@ -22,6 +22,7 @@ class User(Base):
     deletable = Column(Boolean, index=True, default=False, nullable=False)
     basic_salary = Column(Float(asdecimal=True), index=True, default=0)
     net_salary = Column(Float(asdecimal=True), index=True, default=0)
+    is_first_time_login = Column(Boolean, index=True, default=True)
     
     # Relationships
     occupation = relationship("Occupation", back_populates=__tablename__, lazy="joined", uselist=False)

@@ -41,13 +41,13 @@ class AuthAPI(RouteInterface):
             password = getattr(credential, "password")
             grant_type = getattr(credential, "grant_type")
             
-            if grant_type == "password":
-                # Getting User
-                user = None
-                with self.session() as db:
-                    user = db.query(User).filter(User.email_address == email).first()
-                    db.close()
+            # Getting User
+            user = None
+            with self.session() as db:
+                user = db.query(User).filter(User.email_address == email).first()
+                db.close()
                 
+            if grant_type == "password":
                 # Validations
                 if user != None and not user.check_password(password=password) or user == None:
                     raise Exception("Invalid credential")
@@ -63,7 +63,8 @@ class AuthAPI(RouteInterface):
                     accessToken=aToken.token,
                     refreshToken=rToken.token,
                     expires=int(aToken.expires),
-                    refreshTokenExpires=int(rToken.expires)
+                    refreshTokenExpires=int(rToken.expires),
+                    is_first_time_login=user.is_first_time_login
                 )
                 
                 response.status_code = status.HTTP_201_CREATED
@@ -79,7 +80,8 @@ class AuthAPI(RouteInterface):
                         accessToken=aToken.token,
                         refreshToken=rToken.token,
                         expires=int(aToken.expires),
-                        refreshTokenExpires=int(rToken.expires)
+                        refreshTokenExpires=int(rToken.expires),
+                        is_first_time_login=user.is_first_time_login
                     )
                     
                     response.status_code = status.HTTP_201_CREATED

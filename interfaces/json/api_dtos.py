@@ -141,6 +141,7 @@ class User(BaseModel):
     gender: Optional[str] = None
     basic_salary: Optional[float] = None
     net_salary: Optional[float] = None
+    is_first_time_login: Optional[bool] = None
     
 class Dependencies(BaseModel):
     name: Optional[str] = None

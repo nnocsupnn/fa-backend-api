@@ -182,6 +182,7 @@ class JwtResponseJson(BaseModel):
     refreshToken: str
     expires: int
     refreshTokenExpires: Optional[int] = None
+    is_first_time_login: Optional[bool] = None
     
 class SuccessResponseJson(BaseModel):
     status: Optional[int] = 200
@@ -231,6 +232,7 @@ class UserResponseJson(BaseModel):
     date_of_birth: Optional[date] = None
     basic_salary: Optional[float] = None
     net_salary: Optional[float] = None
+    is_first_time_login: Optional[bool] = None
     user_detail: Optional[UserDetailResponseJson] = None
     dependencies: list[DependenciesResponseJson] = []
     lifestyle_protection: Optional[LifestyleProtectionResponseJson] = None

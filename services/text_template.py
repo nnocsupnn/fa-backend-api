@@ -42,7 +42,7 @@ class TextTemplateService:
             "Business",
             "Optional",
             "Educational Expense",
-            "Amortizations"
+            "Amortizations",
             "Educational"
         ]
         
