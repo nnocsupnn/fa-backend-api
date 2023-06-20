@@ -10,6 +10,7 @@ from routes import *
 from security import AuthSecurity
 from services import TextTemplateService as Templates, ConfigService
 from argparse import ArgumentParser
+from middlewares.tokenChecker import token_check_middleware
 
 # Intialize db (DDL)
 Base.metadata.create_all(engine, checkfirst=True)
@@ -40,21 +41,27 @@ app = FastAPI(
 )
 
 '''
+Security Implementation
+'''
+authSecurity = AuthSecurity(app=app)
+app = authSecurity.getApp()
+
+'''
+MIDDLEWARES
+'''
+app.middleware("http")(token_check_middleware)
+
+
+'''
 CORS
 '''
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["GET", "POST", "DELETE", "PATCH", "PUT"],
+    allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True
 )
-
-'''
-Security Implementation
-'''
-authSecurity = AuthSecurity(app=app)
-app = authSecurity.getApp()
 
 # # # # # # # #
 #  Routes     #

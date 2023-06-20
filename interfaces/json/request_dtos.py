@@ -87,3 +87,8 @@ class ConfigPatchJson(BaseModel):
     inflation_rate: float
     deduction_from_family_home: float
     other_deduction: float
+    
+class UpdatePasswordPatchJson(BaseModel):
+    oldPassword: str
+    newPassword: str
+    repeatPassword: str

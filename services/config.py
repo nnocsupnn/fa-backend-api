@@ -11,8 +11,8 @@ class ConfigService:
             if isConfigExist == 0:
                 config = Config(
                     inflation_rate=0,
-                    deduction_from_family_home=0,
-                    other_deduction=0
+                    deduction_from_family_home=10000000,
+                    other_deduction=5000000
                 )
                 
                 db.add(config)

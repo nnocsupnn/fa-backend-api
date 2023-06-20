@@ -13,6 +13,9 @@ def ex_fa_exception_handler(request, exc: Exception):
     statusRes = status.HTTP_400_BAD_REQUEST
     if str(exc) == "Invalid credential":
         statusRes = status.HTTP_400_BAD_REQUEST
+        
+    if str(exc) == "TOKEN_INVALID":
+        statusRes = status.HTTP_401_UNAUTHORIZED
     
     return JSONResponse(
         status_code=statusRes,
@@ -37,6 +40,7 @@ def nr_exception_handler(request, exc: NoResultFound):
     )
     
 def fa_exception_handler(request, exc: IntegrityError):
+    print(str(exc))
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={

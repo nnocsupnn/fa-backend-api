@@ -36,7 +36,7 @@ class ExpensesServices:
     def saveExpense(userId: int, expense: ExpensePostJson):
         result = None
         with Session() as db:
-            userDetail = db.query(UserDetail).filter(UserDetail.id == userId).first()
+            userDetail = db.query(UserDetail).filter(UserDetail.user_id == userId).first()
             result = Expenses(
                 user_detail_id=userDetail.id,
                 expense_amount=expense.expense_amount,

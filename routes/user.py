@@ -21,7 +21,9 @@ from interfaces.json import User as UserJson, \
     DependenciesResponseJsonFull, \
     DependencyDetailResponseJson, \
     DependencyProvisionResponseJson, \
-    IncomeProtectionProvisionResponseJson
+    IncomeProtectionProvisionResponseJson, \
+    UpdatePasswordPatchJson, \
+    SuccessResponseJson
 from services import UserService
 from config.functions import serialize_model
 from fastapi_jwt_auth import AuthJWT
@@ -120,3 +122,12 @@ class UserAPI(RouteInterface):
         async def deleteUser(id: int, response: Response) -> None:
             user = self.service.deleteUser(id)
             return JSONResponse(content=jsonable_encoder(user), status_code=status.HTTP_204_NO_CONTENT)
+        
+        
+        @self.router.patch("/update-password", summary="Update Password")
+        async def updatePassword(body: UpdatePasswordPatchJson, response: Response, auth: AuthJWT = Depends()) -> SuccessResponseJson:
+            auth.jwt_required()
+            userId = auth.get_jwt_subject()
+            self.service.updatePassword(body, userId)
+            response.status_code = status.HTTP_202_ACCEPTED
+            return SuccessResponseJson(status=status.HTTP_202_ACCEPTED, message="Password updated successfully.")

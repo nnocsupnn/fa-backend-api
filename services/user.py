@@ -15,7 +15,7 @@ from models import User, \
 from json import loads
 from fastapi.exceptions import FastAPIError
 
-from interfaces.json.api_dtos import User as UserJson, UserRegister
+from interfaces.json import User as UserJson, UserRegister, UpdatePasswordPatchJson
 from config.db import SessionLocal as Session
 from sqlalchemy.exc import NoResultFound
 
@@ -179,17 +179,30 @@ class UserService:
         try:
             with Session() as db:
                 dependencies = db.query(Dependencies).filter(Dependencies.user_id == id).first()
-                dependencDetail = db.query(DependencyDetail).filter(DependencyDetail.id == dependencies.dependency_detail_id).first()
+                if dependencies != None:
+                    dependencDetail = db.query(DependencyDetail).filter(DependencyDetail.id == dependencies.dependency_detail_id).first()
                 
-                db.query(Dependencies).where(Dependencies.user_id == id).delete()
-                db.query(DependencyDetail).where(DependencyDetail.id == dependencies.dependency_detail_id).delete()
-                db.query(DependencyProvision).where(DependencyProvision.id == dependencDetail.dependency_provision_id).delete()
+                    db.query(Dependencies).where(Dependencies.user_id == id).delete()
+                    db.query(DependencyDetail).where(DependencyDetail.id == dependencies.dependency_detail_id).delete()
+                    db.query(DependencyProvision).where(DependencyProvision.id == dependencDetail.dependency_provision_id).delete()
                 
                 incomeProtec = db.query(IncomeProtection).filter(IncomeProtection.user_id == id).first()
                 
-                db.query(IncomeProtectionProvision).where(IncomeProtectionProvision.income_protection_id == incomeProtec.id).delete()
-                db.query(IncomeProtection).where(IncomeProtection.user_id == id).delete()
+                if incomeProtec != None:
+                    db.query(IncomeProtectionProvision).where(IncomeProtectionProvision.income_protection_id == incomeProtec.id).delete()
+                    db.query(IncomeProtection).where(IncomeProtection.user_id == id).delete()
+                    
+                kapritso = db.query(Kapritso).filter(Kapritso.user_id == id).first()
+                if kapritso != None:
+                    db.query(Kapritso).where(Kapritso.id == kapritso.id).delete()
                 
+                wealth = db.query(Wealth).filter(Wealth.user_id == id).first()
+                if wealth != None:
+                    db.query(Wealth).where(Wealth.id == wealth.id).delete()
+                    
+                lifestyleProtec = db.query(LifestyleProtection).filter(LifestyleProtection.user_id == id).first()
+                if lifestyleProtec != None:
+                    db.query(LifestyleProtection).where(LifestyleProtection.id == wealth.id).delete()
                 
                 db.query(Incomes).where(Incomes.user_detail_id == id).delete()
                 db.query(Expenses).where(Expenses.user_detail_id == id).delete()
@@ -201,3 +214,25 @@ class UserService:
             return True
         except Exception as e:
             raise e
+        
+    def updatePassword(data: UpdatePasswordPatchJson, userId: int):
+        try:
+            with Session() as db:
+                user = db.query(User).filter(User.id == userId).first()
+                
+                if user == None:
+                    raise Exception("User not found. Please validate your token.")
+                
+                if user.check_password(data.oldPassword):
+                    # hashing was done in the model side via middleware
+                    user.password = data.newPassword
+                    
+                    db.commit()
+                else:
+                    raise Exception("Your old password does not match the current password.")
+                
+                db.close()
+              
+        except Exception as e:
+            raise e
+            

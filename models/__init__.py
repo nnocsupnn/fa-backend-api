@@ -14,5 +14,7 @@ from models.LifestyleProtectionInvestments import LifestyleProtectionInvestments
 from models.Wealth import Wealth
 from models.Kapritso import Kapritso
 from models.Config import Config
+from models.LoginSession import LoginSession
+from models.BlockedSession import BlockedSession
 
 
