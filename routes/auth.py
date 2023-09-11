@@ -19,7 +19,7 @@ class AuthAPI(RouteInterface):
         self.router = APIRouter()
         self.setup_routes()
         
-    def validateUserSession(self, userId, tokenExpr: int):
+    def validateUserSession(self, userId, tokenExpr: int, token: str):
         session = None
         with self.session() as db:
             session = db.query(LoginSession).filter(LoginSession.user_id == userId).first()
@@ -31,17 +31,21 @@ class AuthAPI(RouteInterface):
                 if tokenExpr == 0:
                     raise Exception("User already logged out or not logged in.")
                 if session == None:
-                    session = LoginSession(user_id=userId, token_expr=tokenExpr)
+                    session = LoginSession(user_id=userId, token_expr=tokenExpr, access_token=token)
                     db.add(session)
                     db.commit()
                 else:
                     if session.isTokenExpired():
-                        session = LoginSession(user_id=userId, token_expr=tokenExpr)
+                        session = LoginSession(user_id=userId, token_expr=tokenExpr, access_token=token)
                         db.add(session)
                         db.commit()
                     else:
-                        db.close()
-                        raise Exception("You are currently logged in to other session.")
+                        # add the previous token to blocked list
+                        blocked = BlockedSession(token=session.access_token)
+                        db.add(blocked)
+                        # Update the token session
+                        session.access_token = token
+                        db.commit()
                 
             db.close()
             
@@ -95,7 +99,7 @@ class AuthAPI(RouteInterface):
                     is_first_time_login=user.is_first_time_login
                 )
                 
-                self.validateUserSession(user.id, aToken.expires)
+                self.validateUserSession(user.id, aToken.expires, aToken.token)
                 
                 response.status_code = status.HTTP_201_CREATED
                 return token
@@ -119,7 +123,7 @@ class AuthAPI(RouteInterface):
                         is_first_time_login=user.is_first_time_login
                     )
                     
-                    self.validateUserSession(userId, aToken.expires)
+                    self.validateUserSession(userId, aToken.expires, aToken.token)
                     
                     response.status_code = status.HTTP_201_CREATED
                     return token
@@ -145,7 +149,7 @@ class AuthAPI(RouteInterface):
                     db.commit()
                 db.close()
                 
-            self.validateUserSession(userId, 0)
+            self.validateUserSession(userId, 0, "")
                 
             response.status_code = status.HTTP_200_OK
             return SuccessResponseJson(status=200, message="Succesfully logged out.")

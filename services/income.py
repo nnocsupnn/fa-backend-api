@@ -59,7 +59,7 @@ class IncomeService:
     def saveIncome(userId: int, income: IncomePostJson):
         result = None
         with Session() as db:
-            userDetail = db.query(UserDetail).filter(UserDetail.id == userId).first()
+            userDetail = db.query(UserDetail).filter(UserDetail.user_id == userId).first()
             result = Incomes(
                 user_detail_id=userDetail.id,
                 income_amount=income.income_amount,

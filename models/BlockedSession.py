@@ -14,6 +14,3 @@ class BlockedSession(Base):
     token = Column(Text, nullable=False)
     created_date = Column(DateTime, default=func.now())
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
-    
-    def isTokenExpired(self):
-        return datetime.fromtimestamp(self.token_expr) - datetime.now() < timedelta(0)

@@ -49,8 +49,7 @@ class TestAPI(RouteInterface):
                         date_of_birth=datetime.date(1996, 1, 21),
                         marital="married",
                         gender="male",
-                        active=1, # activate
-                        occupation_id=occ.id
+                        active=1
                     )
                     
                     db.add(user)
@@ -183,20 +182,13 @@ class TestAPI(RouteInterface):
                     lifestyleInvestment = LifestyleProtectionInvestments(
                         user_id=user.id,
                         age=52,
-                        annual_investment=120000,
-                        projection_rate=5.0
+                        annual_investment=120000
                     )
                     
                     db.add_all([lifestyle_protection, lifestyleInvestment])
                     
                     wealth = Wealth(
-                        user_id=user.id,
-                        real_properties_value=0,
-                        personal_properties_value=0,
-                        liquid_investments_value=0,
-                        projected_apprec_rate_per_year=0,
-                        projected_rate_return_on_fixed=0,
-                        tax_rate=0
+                        user_id=user.id
                     )
                     
                     kapritso = Kapritso(
@@ -209,7 +201,8 @@ class TestAPI(RouteInterface):
                     
                     db.commit()
                     db.close()
-                except Exception:
+                except Exception as e:
+                    print(e)
                     db.rollback()
                     db.close()
             
